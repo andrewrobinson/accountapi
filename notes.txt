@@ -1,0 +1,158 @@
+
+--get working curls, and do a create, get, delete - script this
+code up any working client calls
+exercise these from a main method.
+add an integration test - and maybe manual docker cleardown
+get integ test running from docker file, then from docker-compose
+make it a go module, and move main to another module that uses it, but don't check it in
+
+
+Questions:
+Do we need to provide a logger and configure it?
+How do we configure the endpoint?
+The Data top-level struct ....
+
+Copy this structure?
+
+accountapi_1  | /go/src/github.com/form3tech/interview-accountapi/internal/app/interview-accountapi/api/handler.go:18 (0xcdb809)
+accountapi_1  | /go/src/github.com/form3tech/interview-accountapi/vendor/github.com/gin-gonic/gin/context.go:165 (0xc49cb3)
+
+
+https://github.com/gin-gonic/gin
+
+
+https://golang.org/doc/tutorial/create-module
+
+https://golang.org/doc/tutorial/call-module-code
+
+
+https://www.ardanlabs.com/blog/2019/03/integration-testing-in-go-executing-tests-with-docker.html
+
+https://levelup.gitconnected.com/running-go-unit-tests-inside-a-docker-container-a41ebfcfd854
+https://docs.docker.com/language/golang/run-tests/
+https://github.com/ory/dockertest
+
+ Libraries to support testing or types like UUID are fine.
+
+
+
+https://pkg.go.dev/net/http
+
+package gateway
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"time"
+
+	log "github.com/sirupsen/logrus"
+)
+
+type SmokeRestClient struct {
+	account    string
+	apiKey     string
+	httpClient *http.Client
+}
+
+func NewSmokeRestClient(account string, apiKey string, httpClient *http.Client) *SmokeRestClient {
+	return &SmokeRestClient{account, apiKey, httpClient}
+}
+
+func (c *SmokeRestClient) TriggerSurvey(survey SmokeSurvey) ([]byte, *int, error) {
+	url := fmt.Sprintf("https://%s.eyerys.co.za/api/services/data_integrator/v1.0/datasources/allan_gray", c.account)
+
+	json, err := json.Marshal(survey)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	log.Debugf("trigger JSON payload: %s", string(json))
+
+	resp, err := c.doPost(url, json)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return body, &resp.StatusCode, nil
+}
+
+
+https://api-docs.form3.tech/api.html#organisation-accounts
+
+http://localhost:8080/v1/organisation/accounts
+
+http://localhost:8080/v1/health
+
+https://api-docs.form3.tech/api.html?http#organisation-accounts-create
+
+https://api-docs.form3.tech/api.html?http#organisation-accounts-fetch
+
+https://api-docs.form3.tech/api.html?http#organisation-accounts-delete
+
+
+In 2016....
+https://medium.com/@cep21/go-client-library-best-practices-83d877d604ca
+
+
+
+https://documenter.getpostman.com/view/5561717/TWDTNzaD#4931cca1-c62a-41bf-bd21-a0aa488bc067
+
+
+create:
+
+curl --location --request POST 'http://localhost:8080/v1/organisation/accounts' \
+--header 'Content-Type: application/json' \
+--header 'Date: {{request_date}}' \
+--data-raw '{
+  "data": {
+    "id": "ad27e265-9605-4b4b-a0e5-3003ea9cc4dc",
+    "organisation_id": "eb0bd6f5-c3f5-44b2-b677-acd23cdde73c",
+    "type": "accounts",
+    "attributes": {
+        "name": [
+        "Samantha Holder"
+      ],
+        "country": "GB",
+        "base_currency": "GBP",
+        "bank_id": "400302",
+        "bank_id_code": "GBDSC",
+        "account_number": "10000004",
+        "customer_id": "234",
+        "iban": "GB28NWBK40030212764204",
+        "bic": "NWBKGB42",
+        "account_classification": "Personal"
+    }
+  }
+}'
+
+fetch all and one:
+
+curl --location --request GET 'http://localhost:8080/v1/organisation/accounts' \
+--header 'Accept: application/vnd.api+json' \
+--header 'Date: {{request_date}}'
+
+
+curl --location -g --request GET 'http://localhost:8080/v1/organisation/accounts/ad27e265-9605-4b4b-a0e5-3003ea9cc4dc' \
+--header 'Accept: application/vnd.api+json' \
+--header 'Date: {{request_date}}'
+
+
+delete:
+
+curl --location -g --request DELETE 'https://api.staging-form3.tech/v1/organisation/accounts/{{account_id}}?version=0' \
+--header 'Authorization: {{authorization}}' \
+--header 'Date: {{request_date}}' \
+--data-raw ''
+
+
+
+
