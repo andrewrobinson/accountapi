@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-
-	"github.com/andrewrobinson/accountapi/account"
 )
 
 //package names clashing with module name ... ?
@@ -24,7 +22,7 @@ func get() {
 
 	endpoint := "http://localhost:8080/v1/organisation/accounts"
 
-	c := account.NewAccountRestClient(endpoint, "")
+	c := NewAccountRestClient(endpoint, "")
 
 	body, statusCode, err := c.GetAccount("ad27e265-9605-4b4b-a0e5-3003ea9cc4dc")
 
@@ -48,7 +46,7 @@ func delete() {
 	//may need version, this is hardcoded deeper currently
 	endpoint := "http://localhost:8080/v1/organisation/accounts"
 
-	c := account.NewAccountRestClient(endpoint, "")
+	c := NewAccountRestClient(endpoint, "")
 
 	body, statusCode, err := c.DeleteAccount("ad27e265-9605-4b4b-a0e5-3003ea9cc4dc")
 
@@ -73,22 +71,22 @@ func create() {
 	accountClassification := "Personal"
 	// version := int64(0)
 
-	att := account.AccountAttributes{Name: []string{"Samantha Holder"},
+	att := AccountAttributes{Name: []string{"Samantha Holder"},
 		Country: &country, BaseCurrency: "GBP", BankID: "400302", BankIDCode: "GBDSC",
 		AccountNumber: "10000004", CustomerID: "234", Iban: "GB28NWBK40030212764204", Bic: "NWBKGB42", AccountClassification: &accountClassification,
 	}
 
-	m := account.AccountData{ID: "ad27e265-9605-4b4b-a0e5-3003ea9cc4dc",
+	m := AccountData{ID: "ad27e265-9605-4b4b-a0e5-3003ea9cc4dc",
 		OrganisationID: "eb0bd6f5-c3f5-44b2-b677-acd23cdde73c",
 		Type:           "accounts", Attributes: &att}
 
-	data := account.Data{Data: &m}
+	data := Data{Data: &m}
 
 	// fmt.Printf("model data: %+v", data)
 
 	endpoint := "http://localhost:8080/v1/organisation/accounts"
 
-	c := account.NewAccountRestClient(endpoint, "")
+	c := NewAccountRestClient(endpoint, "")
 
 	body, statusCode, err := c.CreateAccount(data)
 
@@ -111,7 +109,7 @@ func getAll() {
 
 	endpoint := "http://localhost:8080/v1/organisation/accounts"
 
-	c := account.NewAccountRestClient(endpoint, "")
+	c := NewAccountRestClient(endpoint, "")
 
 	body, statusCode, err := c.GetAccounts()
 
