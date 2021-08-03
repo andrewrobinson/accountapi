@@ -11,6 +11,14 @@ Questions:
 Do we need to provide a logger and configure it?
 How do we configure the endpoint?
 The Data top-level struct ....
+package names clashing with module name ... ?
+same headers across get, post, which headers etc etc
+
+why create a NewXXX method?
+
+
+https://www.softkraft.co/companies-using-golang/
+
 
 Copy this structure?
 

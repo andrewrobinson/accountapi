@@ -1,5 +1,6 @@
 package account
 
+//is there an interface{} solution for this one?
 type Data struct {
 	Data *AccountData `json:"data,omitempty"`
 }
@@ -15,8 +16,7 @@ type AccountData struct {
 	Version        *int64             `json:"version,omitempty"`
 }
 
-// "account_number": "10000004",
-// //         "customer_id": "234",
+// I added 	//customer_id
 
 type AccountAttributes struct {
 	AccountClassification   *string  `json:"account_classification,omitempty"`
@@ -36,28 +36,3 @@ type AccountAttributes struct {
 	Status                  *string  `json:"status,omitempty"`
 	Switched                *bool    `json:"switched,omitempty"`
 }
-
-// curl --location --request POST 'http://localhost:8080/v1/organisation/accounts' \
-// --header 'Content-Type: application/json' \
-// --header 'Date: {{request_date}}' \
-// --data-raw '{
-//   "data": {
-//     "id": "ad27e265-9605-4b4b-a0e5-3003ea9cc4dc",
-//     "organisation_id": "eb0bd6f5-c3f5-44b2-b677-acd23cdde73c",
-//     "type": "accounts",
-//     "attributes": {
-// "name": [
-//     "Samantha Holder"
-//   ],
-//         "country": "GB",
-//         "base_currency": "GBP",
-//         "bank_id": "400302",
-//         "bank_id_code": "GBDSC",
-//         "account_number": "10000004",
-//         "customer_id": "234",
-//         "iban": "GB28NWBK40030212764204",
-//         "bic": "NWBKGB42",
-//         "account_classification": "Personal"
-//     }
-//   }
-// }'
