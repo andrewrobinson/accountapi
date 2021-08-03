@@ -13,6 +13,13 @@ How do we configure the endpoint?
 The Data top-level struct ....
 package names clashing with module name ... ?
 same headers across get, post, which headers etc etc
+uuid lib
+
+
+https://docs.docker.com/language/golang/build-images/
+
+doc recommends https://github.com/cenkalti/backoff - but for this exercise?
+
 
 why create a NewXXX method?
 

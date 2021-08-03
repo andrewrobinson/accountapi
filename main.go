@@ -45,6 +45,7 @@ func get() {
 
 func delete() {
 
+	//may need version, this is hardcoded deeper currently
 	endpoint := "http://localhost:8080/v1/organisation/accounts"
 
 	c := account.NewAccountRestClient(endpoint, "")
@@ -70,8 +71,7 @@ func create() {
 
 	country := "GB"
 	accountClassification := "Personal"
-	//not in the curl
-	version := int64(1)
+	// version := int64(0)
 
 	att := account.AccountAttributes{Name: []string{"Samantha Holder"},
 		Country: &country, BaseCurrency: "GBP", BankID: "400302", BankIDCode: "GBDSC",
@@ -80,7 +80,7 @@ func create() {
 
 	m := account.AccountData{ID: "ad27e265-9605-4b4b-a0e5-3003ea9cc4dc",
 		OrganisationID: "eb0bd6f5-c3f5-44b2-b677-acd23cdde73c",
-		Type:           "accounts", Attributes: &att, Version: &version}
+		Type:           "accounts", Attributes: &att}
 
 	data := account.Data{Data: &m}
 
