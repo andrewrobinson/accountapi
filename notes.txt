@@ -27,6 +27,10 @@ why create a NewXXX method?
 https://www.softkraft.co/companies-using-golang/
 
 
+
+https://github.com/golang-standards/project-layout
+https://medium.com/golang-learn/go-project-layout-e5213cdcfaa2
+
 Copy this structure?
 
 accountapi_1  | /go/src/github.com/form3tech/interview-accountapi/internal/app/interview-accountapi/api/handler.go:18 (0xcdb809)
