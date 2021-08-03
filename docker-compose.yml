@@ -51,5 +51,5 @@ services:
         - .:/go/src/go-with-compose
       working_dir: /go/src/go-with-compose
       command: ls -la /go/src/go-with-compose/account
-      # command: go run main.go
+      command: go run main.go
       # command: go test  ./...
