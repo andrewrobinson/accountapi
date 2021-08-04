@@ -1,7 +1,6 @@
 package client
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -127,64 +126,4 @@ func (c *AccountRestClient) Delete(id uuid.UUID, version int64) error {
 		return fmt.Errorf("statusCode not 204:%d", *statusCode)
 	}
 
-}
-
-//private methods
-
-//TODO - prove these actually have the effect compared to inlining them
-// a test assertion about headers?
-func setCommonHeaders(req *http.Request) {
-	req.Header.Set("Accept", "application/vnd.api+json")
-	req.Header.Set("Date", "{request_date}")
-}
-
-//TODO - could move this out of the "class" and just pass in the c.httpClient?
-func (c *AccountRestClient) doGet(url string) (*http.Response, error) {
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	//TODO - I got these from the postman collection? Seems to work
-	setCommonHeaders(req)
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, nil
-}
-
-func (c *AccountRestClient) doDelete(url string) (*http.Response, error) {
-	req, err := http.NewRequest("DELETE", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	setCommonHeaders(req)
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, nil
-}
-
-func (c *AccountRestClient) doPost(url string, json []byte) (*http.Response, error) {
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(json))
-	if err != nil {
-		return nil, err
-	}
-
-	//TODO - I got these from the postman collection? Seems to work
-	setCommonHeaders(req)
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, nil
 }
