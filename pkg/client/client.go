@@ -48,6 +48,7 @@ func NewAccountRestClient(endpoint string) *AccountRestClient {
 	return &AccountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
 }
 
+// TODO - make it return a struct
 func (c *AccountRestClient) Fetch(id string) ([]byte, *int, error) {
 
 	url := fmt.Sprintf(c.getUrlFormatString, id)
@@ -67,6 +68,7 @@ func (c *AccountRestClient) Fetch(id string) ([]byte, *int, error) {
 
 }
 
+//TODO - return the body, or marshall the returned out as a struct or return the input struct?
 func (c *AccountRestClient) Create(data model.AccountData) ([]byte, *int, error) {
 
 	json, err := json.Marshal(data)
@@ -91,6 +93,7 @@ func (c *AccountRestClient) Create(data model.AccountData) ([]byte, *int, error)
 	return body, &resp.StatusCode, nil
 }
 
+//TODO - not sure if we actually need the body returned? return it?
 func (c *AccountRestClient) Delete(id string, version int64) ([]byte, *int, error) {
 
 	deleteUrl := fmt.Sprintf(c.deleteUrlFormatString, id, version)

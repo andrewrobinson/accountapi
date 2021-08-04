@@ -1,6 +1,5 @@
 package model
 
-//this could be AccountData
 type AccountData struct {
 	Data *Account `json:"data,omitempty"`
 }
