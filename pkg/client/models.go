@@ -1,5 +1,7 @@
 package client
 
+//TODO - we really want some client.models package?
+
 //this could be AccountData
 type Data struct {
 	Data *AccountData `json:"data,omitempty"`

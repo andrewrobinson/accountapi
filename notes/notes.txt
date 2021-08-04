@@ -9,6 +9,43 @@ https://github.com/form3tech-oss/interview-accountapi-pair-programming/blob/mast
 
 
 
+// const (
+// 	GAME_ID1 = 12345
+// 	GAME_ID2 = 67890
+// )
+
+// type Game struct {
+// 	id int
+// }
+
+// func (g Game) Id() int {
+// 	return g.id
+// }
+
+// package main
+
+// import "path/to/games"
+
+// func main() {
+// 	game1 := games.Game{
+// 		id: GAME_ID1,
+// 	}
+// 	fmt.Println("Game ID:", game1.Id())
+
+//         // This will not compile, as id is unexported:
+//         game1.id = 67890
+// }
+
+
+
+	//TODO - play with  this
+	//https://medium.com/orijtech-developers/taming-net-http-b946edfda562
+	// blob, err := httputil.DumpRequestOut(req, true)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// println("blob:" + string(blob))
+
 
 Client libraries formats:
 

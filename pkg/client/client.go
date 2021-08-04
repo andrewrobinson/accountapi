@@ -7,14 +7,19 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
-	// log "github.com/sirupsen/logrus"
 )
 
 type AccountRestClient struct {
-	endpoint   string
-	apiKey     string
-	httpClient *http.Client
+	endpoint              string
+	getUrlFormatString    string
+	deleteUrlFormatString string
+	httpClient            *http.Client
 }
+
+// const (
+// 	ACCEPT_HEADER = "application/vnd.api+json"
+// 	GAME_ID2 = 67890
+// )
 
 func initHTTPClient() *http.Client {
 	return &http.Client{
@@ -26,47 +31,24 @@ func initHTTPClient() *http.Client {
 	}
 }
 
+//TODO - a fake fn for a test test
 func ReturnFive(in int) int {
 	return 5
 }
 
-func NewAccountRestClient(endpoint string, apiKey string) *AccountRestClient {
-
+func NewAccountRestClient(endpoint string) *AccountRestClient {
 	httpClient := initHTTPClient()
 
-	return &AccountRestClient{endpoint, apiKey, httpClient}
+	//TODO - any better way of storing and not exposing these?
+	getUrlFormatString := endpoint + "/%s"
+	deleteUrlFormatString := endpoint + "/%s?version=%d"
+
+	return &AccountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
 }
 
-func (c *AccountRestClient) DeleteAccount(id string) ([]byte, *int, error) {
+func (c *AccountRestClient) Fetch(id string) ([]byte, *int, error) {
 
-	urlFmt := c.endpoint + "/%s?version=0"
-
-	url := fmt.Sprintf(urlFmt, id)
-
-	// fmt.Printf("DeleteAccount passed id:%s, gives urlFmt: %s, url:%s\n", id, urlFmt, url)
-
-	resp, err := c.doDelete(url)
-	if err != nil {
-		return nil, nil, err
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return body, &resp.StatusCode, nil
-
-}
-
-func (c *AccountRestClient) GetAccount(id string) ([]byte, *int, error) {
-
-	urlFmt := c.endpoint + "/%s"
-
-	url := fmt.Sprintf(urlFmt, id)
-
-	// fmt.Printf("GetAccount passed id:%s, gives urlFmt: %s, url:%s\n", id, urlFmt, url)
+	url := fmt.Sprintf(c.getUrlFormatString, id)
 
 	resp, err := c.doGet(url)
 	if err != nil {
@@ -83,7 +65,7 @@ func (c *AccountRestClient) GetAccount(id string) ([]byte, *int, error) {
 
 }
 
-func (c *AccountRestClient) CreateAccount(data Data) ([]byte, *int, error) {
+func (c *AccountRestClient) Create(data Data) ([]byte, *int, error) {
 
 	json, err := json.Marshal(data)
 
@@ -92,8 +74,6 @@ func (c *AccountRestClient) CreateAccount(data Data) ([]byte, *int, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-
-	// log.Debugf("trigger JSON payload: %s", string(json))
 
 	resp, err := c.doPost(c.endpoint, json)
 	if err != nil {
@@ -109,9 +89,13 @@ func (c *AccountRestClient) CreateAccount(data Data) ([]byte, *int, error) {
 	return body, &resp.StatusCode, nil
 }
 
-func (c *AccountRestClient) GetAccounts() ([]byte, *int, error) {
+func (c *AccountRestClient) Delete(id string, version int64) ([]byte, *int, error) {
 
-	resp, err := c.doGet(c.endpoint)
+	deleteUrl := fmt.Sprintf(c.deleteUrlFormatString, id, version)
+
+	// fmt.Printf("DeleteAccount passed id:%s, gives deleteUrl:%s\n", id, deleteUrl)
+
+	resp, err := c.doDelete(deleteUrl)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -123,8 +107,18 @@ func (c *AccountRestClient) GetAccounts() ([]byte, *int, error) {
 	}
 
 	return body, &resp.StatusCode, nil
+
 }
 
+//private methods
+
+//TODO - prove these actually have the effect compared to inlining them
+func setCommonHeaders(req *http.Request) {
+	req.Header.Set("Accept", "application/vnd.api+json")
+	req.Header.Set("Date", "{request_date}")
+}
+
+//TODO - could move this out of the "class" and just pass in the c.httpClient?
 func (c *AccountRestClient) doGet(url string) (*http.Response, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -132,8 +126,7 @@ func (c *AccountRestClient) doGet(url string) (*http.Response, error) {
 	}
 
 	//TODO - I got these from the postman collection? Seems to work
-	req.Header.Set("Accept", "application/vnd.api+json")
-	req.Header.Set("Date", "{request_date}")
+	setCommonHeaders(req)
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
@@ -149,9 +142,7 @@ func (c *AccountRestClient) doDelete(url string) (*http.Response, error) {
 		return nil, err
 	}
 
-	//TODO - I got these from the postman collection? Seems to work
-	req.Header.Set("Accept", "application/vnd.api+json")
-	req.Header.Set("Date", "{request_date}")
+	setCommonHeaders(req)
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
@@ -168,16 +159,7 @@ func (c *AccountRestClient) doPost(url string, json []byte) (*http.Response, err
 	}
 
 	//TODO - I got these from the postman collection? Seems to work
-	req.Header.Set("Accept", "application/vnd.api+json")
-	req.Header.Set("Date", "{request_date}")
-
-	//TODO - play with  this
-	//https://medium.com/orijtech-developers/taming-net-http-b946edfda562
-	// blob, err := httputil.DumpRequestOut(req, true)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// println("blob:" + string(blob))
+	setCommonHeaders(req)
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
