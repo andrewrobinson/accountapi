@@ -13,20 +13,20 @@ import (
 func main() {
 	fmt.Println("hello world")
 
-	get()
-	create()
-	get()
-	delete()
+	//use this when running locally from go run
+	endpoint := "http://localhost:8080/v1/organisation/accounts"
+
+	//use this one when running from docker-compose/script/run-tests.sh
+	// endpoint := "http://accountapi:8080/v1/organisation/accounts"
+
+	get(endpoint)
+	create(endpoint)
+	get(endpoint)
+	delete(endpoint)
 	// getAll()
 }
 
-func get() {
-
-	//use this when running locally from go run
-	// endpoint := "http://localhost:8080/v1/organisation/accounts"
-
-	//use this one when running from docker-compose/script/run-tests.sh
-	endpoint := "http://accountapi:8080/v1/organisation/accounts"
+func get(endpoint string) {
 
 	c := client.NewAccountRestClient(endpoint, "")
 
@@ -47,11 +47,7 @@ func get() {
 
 }
 
-func delete() {
-
-	//may need version, this is hardcoded deeper currently
-	// endpoint := "http://localhost:8080/v1/organisation/accounts"
-	endpoint := "http://accountapi:8080/v1/organisation/accounts"
+func delete(endpoint string) {
 
 	c := client.NewAccountRestClient(endpoint, "")
 
@@ -72,7 +68,7 @@ func delete() {
 
 }
 
-func create() {
+func create(endpoint string) {
 
 	country := "GB"
 	accountClassification := "Personal"
@@ -90,9 +86,6 @@ func create() {
 	data := client.Data{Data: &m}
 
 	// fmt.Printf("model data: %+v", data)
-
-	// endpoint := "http://localhost:8080/v1/organisation/accounts"
-	endpoint := "http://accountapi:8080/v1/organisation/accounts"
 
 	c := client.NewAccountRestClient(endpoint, "")
 
@@ -113,10 +106,7 @@ func create() {
 
 }
 
-func getAll() {
-
-	// endpoint := "http://localhost:8080/v1/organisation/accounts"
-	endpoint := "http://accountapi:8080/v1/organisation/accounts"
+func getAll(endpoint string) {
 
 	c := client.NewAccountRestClient(endpoint, "")
 
