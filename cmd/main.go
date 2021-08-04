@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/andrewrobinson/accountapi/client"
+	"github.com/andrewrobinson/accountapi/pkg/client"
 )
 
 //package names clashing with module name ... ?
@@ -14,10 +14,10 @@ func main() {
 	fmt.Println("hello world")
 
 	//use this when running locally from go run
-	endpoint := "http://localhost:8080/v1/organisation/accounts"
+	// endpoint := "http://localhost:8080/v1/organisation/accounts"
 
 	//use this one when running from docker-compose/script/run-tests.sh
-	// endpoint := "http://accountapi:8080/v1/organisation/accounts"
+	endpoint := "http://accountapi:8080/v1/organisation/accounts"
 
 	get(endpoint)
 	create(endpoint)
