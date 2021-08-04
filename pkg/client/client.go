@@ -87,7 +87,7 @@ func (c *AccountRestClient) CreateAccount(data Data) ([]byte, *int, error) {
 
 	json, err := json.Marshal(data)
 
-	fmt.Printf("json:%s\n\n", json)
+	// fmt.Printf("CreateAccount body json:%s\n\n", json)
 
 	if err != nil {
 		return nil, nil, err

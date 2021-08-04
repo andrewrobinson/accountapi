@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net/http"
 	"os"
@@ -8,29 +9,27 @@ import (
 	"github.com/andrewrobinson/accountapi/pkg/client"
 )
 
-//package names clashing with module name ... ?
-
 func main() {
-	fmt.Println("hello world")
 
-	//use this when running locally from go run
-	// endpoint := "http://localhost:8080/v1/organisation/accounts"
+	endpointFlag := flag.String("endpoint", "http://localhost:8080/v1/organisation/accounts", "")
 
-	//use this one when running from docker-compose/script/run-tests.sh
-	endpoint := "http://accountapi:8080/v1/organisation/accounts"
+	flag.Parse()
+	endpoint := *endpointFlag
 
-	get(endpoint)
-	create(endpoint)
-	get(endpoint)
-	delete(endpoint)
-	// getAll()
-}
-
-func get(endpoint string) {
+	fmt.Printf("main running against endpoint:%s\n", endpoint)
 
 	c := client.NewAccountRestClient(endpoint, "")
 
-	body, statusCode, err := c.GetAccount("ad27e265-9605-4b4b-a0e5-3003ea9cc4dc")
+	get(c)
+	create(c)
+	get(c)
+	delete(c)
+	// getAll()
+}
+
+func get(c *client.AccountRestClient) {
+
+	_, statusCode, err := c.GetAccount("ad27e265-9605-4b4b-a0e5-3003ea9cc4dc")
 
 	if err != nil {
 		fmt.Printf("%+v", err)
@@ -39,19 +38,19 @@ func get(endpoint string) {
 
 	success := *statusCode == http.StatusOK
 
-	fmt.Printf("GetAccount response: %d, %s\n\n", *statusCode, string(body))
+	fmt.Printf("GetAccount statusCode: %d, success: %v\n", *statusCode, success)
 
-	if !success {
-		fmt.Printf("response from GetAccount HTTP request not 200 : %d, body: %s", *statusCode, string(body))
-	}
+	// fmt.Printf("GetAccount response: %d, %s\n\n", *statusCode, string(body))
+
+	// if !success {
+	// 	fmt.Printf("response from GetAccount HTTP request not 200 : %d, body: %s", *statusCode, string(body))
+	// }
 
 }
 
-func delete(endpoint string) {
+func delete(c *client.AccountRestClient) {
 
-	c := client.NewAccountRestClient(endpoint, "")
-
-	body, statusCode, err := c.DeleteAccount("ad27e265-9605-4b4b-a0e5-3003ea9cc4dc")
+	_, statusCode, err := c.DeleteAccount("ad27e265-9605-4b4b-a0e5-3003ea9cc4dc")
 
 	if err != nil {
 		fmt.Printf("%+v", err)
@@ -60,15 +59,17 @@ func delete(endpoint string) {
 
 	success := *statusCode == http.StatusNoContent
 
-	fmt.Printf("DeleteAccount response: %d, %s\n\n", *statusCode, string(body))
+	fmt.Printf("DeleteAccount statusCode: %d, success: %v\n", *statusCode, success)
 
-	if !success {
-		fmt.Printf("response from DeleteAccount HTTP request not 204 : %d, body: %s", *statusCode, string(body))
-	}
+	// fmt.Printf("DeleteAccount response: %d, %s\n\n", *statusCode, string(body))
+
+	// if !success {
+	// 	fmt.Printf("response from DeleteAccount HTTP request not 204 : %d, body: %s", *statusCode, string(body))
+	// }
 
 }
 
-func create(endpoint string) {
+func create(c *client.AccountRestClient) {
 
 	country := "GB"
 	accountClassification := "Personal"
@@ -87,9 +88,7 @@ func create(endpoint string) {
 
 	// fmt.Printf("model data: %+v", data)
 
-	c := client.NewAccountRestClient(endpoint, "")
-
-	body, statusCode, err := c.CreateAccount(data)
+	_, statusCode, err := c.CreateAccount(data)
 
 	if err != nil {
 		fmt.Printf("%+v", err)
@@ -98,31 +97,31 @@ func create(endpoint string) {
 
 	success := *statusCode == http.StatusCreated
 
-	fmt.Printf("CreateAccount response for ID: %s, %d, %s\n\n", m.ID, *statusCode, string(body))
+	fmt.Printf("CreateAccount statusCode: %d, success: %v\n", *statusCode, success)
 
-	if !success {
-		fmt.Printf("response from CreateAccount HTTP request not 201 : %d, body: %s", *statusCode, string(body))
-	}
+	// fmt.Printf("CreateAccount response for ID: %s, %d, %s\n\n", m.ID, *statusCode, string(body))
 
-}
-
-func getAll(endpoint string) {
-
-	c := client.NewAccountRestClient(endpoint, "")
-
-	body, statusCode, err := c.GetAccounts()
-
-	if err != nil {
-		fmt.Printf("%+v", err)
-		os.Exit(1)
-	}
-
-	success := *statusCode == http.StatusOK
-
-	fmt.Printf("GetAccounts response: %d, %s\n", *statusCode, string(body))
-
-	if !success {
-		fmt.Printf("response from GetAccounts HTTP request not 200 : %d, body: %s", *statusCode, string(body))
-	}
+	// if !success {
+	// 	fmt.Printf("response from CreateAccount HTTP request not 201 : %d, body: %s", *statusCode, string(body))
+	// }
 
 }
+
+// func getAll(c *client.AccountRestClient) {
+
+// 	body, statusCode, err := c.GetAccounts()
+
+// 	if err != nil {
+// 		fmt.Printf("%+v", err)
+// 		os.Exit(1)
+// 	}
+
+// 	success := *statusCode == http.StatusOK
+
+// 	fmt.Printf("GetAccounts response: %d, %s\n", *statusCode, string(body))
+
+// 	if !success {
+// 		fmt.Printf("response from GetAccounts HTTP request not 200 : %d, body: %s", *statusCode, string(body))
+// 	}
+
+// }

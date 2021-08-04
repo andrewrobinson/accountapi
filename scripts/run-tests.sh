@@ -4,5 +4,5 @@
 
  cd /go-with-compose
 # go test  ./... 
- go run cmd/main.go
+ go run cmd/main.go --endpoint=http://accountapi:8080/v1/organisation/accounts
  
