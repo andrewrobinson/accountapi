@@ -45,7 +45,7 @@ func fetch(accountRestClient *client.AccountRestClient, id uuid.UUID) {
 
 }
 
-func create(accountRestClient *client.AccountRestClient, id uuid.UUID) {
+func buildAccountData(id uuid.UUID) model.AccountData {
 
 	country := "GB"
 	accountClassification := "Personal"
@@ -59,9 +59,12 @@ func create(accountRestClient *client.AccountRestClient, id uuid.UUID) {
 		OrganisationID: "eb0bd6f5-c3f5-44b2-b677-acd23cdde73c",
 		Type:           "accounts", Attributes: &att}
 
-	data := model.AccountData{Data: &m}
+	return model.AccountData{Data: &m}
+}
 
-	// fmt.Printf("model data: %+v", data)
+func create(accountRestClient *client.AccountRestClient, id uuid.UUID) {
+
+	data := buildAccountData(id)
 
 	_, statusCode, err := accountRestClient.Create(data)
 
