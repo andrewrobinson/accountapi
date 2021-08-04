@@ -4,14 +4,17 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
-	"github.com/andrewrobinson/accountapi/account"
+	"github.com/andrewrobinson/accountapi/client"
 )
 
 //package names clashing with module name ... ?
 
 func main() {
-	// fmt.Println("hello world")
+	fmt.Println("hello world, sleeping for 5")
+
+	time.Sleep(5 * time.Second)
 
 	get()
 	create()
@@ -22,9 +25,13 @@ func main() {
 
 func get() {
 
-	endpoint := "http://localhost:8080/v1/organisation/accounts"
+	//use this when running locally from go run
+	// endpoint := "http://localhost:8080/v1/organisation/accounts"
 
-	c := account.NewAccountRestClient(endpoint, "")
+	//use this one when running from docker-compose/script/run-tests.sh
+	endpoint := "http://accountapi:8080/v1/organisation/accounts"
+
+	c := client.NewAccountRestClient(endpoint, "")
 
 	body, statusCode, err := c.GetAccount("ad27e265-9605-4b4b-a0e5-3003ea9cc4dc")
 
@@ -46,9 +53,10 @@ func get() {
 func delete() {
 
 	//may need version, this is hardcoded deeper currently
-	endpoint := "http://localhost:8080/v1/organisation/accounts"
+	// endpoint := "http://localhost:8080/v1/organisation/accounts"
+	endpoint := "http://accountapi:8080/v1/organisation/accounts"
 
-	c := account.NewAccountRestClient(endpoint, "")
+	c := client.NewAccountRestClient(endpoint, "")
 
 	body, statusCode, err := c.DeleteAccount("ad27e265-9605-4b4b-a0e5-3003ea9cc4dc")
 
@@ -73,22 +81,23 @@ func create() {
 	accountClassification := "Personal"
 	// version := int64(0)
 
-	att := account.AccountAttributes{Name: []string{"Samantha Holder"},
+	att := client.AccountAttributes{Name: []string{"Samantha Holder"},
 		Country: &country, BaseCurrency: "GBP", BankID: "400302", BankIDCode: "GBDSC",
 		AccountNumber: "10000004", CustomerID: "234", Iban: "GB28NWBK40030212764204", Bic: "NWBKGB42", AccountClassification: &accountClassification,
 	}
 
-	m := account.AccountData{ID: "ad27e265-9605-4b4b-a0e5-3003ea9cc4dc",
+	m := client.AccountData{ID: "ad27e265-9605-4b4b-a0e5-3003ea9cc4dc",
 		OrganisationID: "eb0bd6f5-c3f5-44b2-b677-acd23cdde73c",
 		Type:           "accounts", Attributes: &att}
 
-	data := account.Data{Data: &m}
+	data := client.Data{Data: &m}
 
 	// fmt.Printf("model data: %+v", data)
 
-	endpoint := "http://localhost:8080/v1/organisation/accounts"
+	// endpoint := "http://localhost:8080/v1/organisation/accounts"
+	endpoint := "http://accountapi:8080/v1/organisation/accounts"
 
-	c := account.NewAccountRestClient(endpoint, "")
+	c := client.NewAccountRestClient(endpoint, "")
 
 	body, statusCode, err := c.CreateAccount(data)
 
@@ -109,9 +118,10 @@ func create() {
 
 func getAll() {
 
-	endpoint := "http://localhost:8080/v1/organisation/accounts"
+	// endpoint := "http://localhost:8080/v1/organisation/accounts"
+	endpoint := "http://accountapi:8080/v1/organisation/accounts"
 
-	c := account.NewAccountRestClient(endpoint, "")
+	c := client.NewAccountRestClient(endpoint, "")
 
 	body, statusCode, err := c.GetAccounts()
 

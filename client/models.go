@@ -1,6 +1,6 @@
 package client
 
-//is there an interface{} solution for this one?
+//this could be AccountData
 type Data struct {
 	Data *AccountData `json:"data,omitempty"`
 }
@@ -8,6 +8,8 @@ type Data struct {
 // Account represents an account in the form3 org section.
 // See https://api-docs.form3.tech/api.html#organisation-accounts for
 // more information about fields.
+
+//this could be Account
 type AccountData struct {
 	Attributes     *AccountAttributes `json:"attributes,omitempty"`
 	ID             string             `json:"id,omitempty"`

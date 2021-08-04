@@ -1,4 +1,37 @@
 
+Form3 specs?
+https://github.com/form3tech-oss/interview-accountapi-pair-programming
+
+
+Understand this:
+https://github.com/form3tech-oss/interview-accountapi-pair-programming/blob/master/cmd/interview-accountapi/main.go
+
+
+
+
+
+Client libraries formats:
+
+https://github.com/FusionAuth/go-client
+
+
+https://github.com/fastly/go-fastly
+https://cloud.google.com/go/docs/reference
+https://pkg.go.dev/google.golang.org/api
+https://docs.emqx.io/en/broker/v4.3/development/go.html
+https://fusionauth.io/docs/v1/tech/client-libraries/go/
+
+
+
+import "github.com/fastly/go-fastly/v3/fastly"
+
+mine would be: 
+
+import github.com/andrewrobinson/accountapi/client
+
+
+
+
 --get working curls, and do a create, get, delete - script this
 code up any working client calls
 exercise these from a main method.
