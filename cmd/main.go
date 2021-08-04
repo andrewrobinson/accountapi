@@ -31,17 +31,13 @@ func main() {
 
 func fetch(accountRestClient *client.AccountRestClient, id uuid.UUID) {
 
-	_, statusCode, err := accountRestClient.Fetch(id)
+	accountData, err := accountRestClient.Fetch(id)
 
 	if err != nil {
-		fmt.Printf("%+v", err)
-		os.Exit(1)
+		fmt.Printf("fetch failure, err: %+v\n", err)
+	} else {
+		fmt.Printf("fetch success returned attributes: %+v with id:%s\n", accountData.Data.Attributes, accountData.Data.ID)
 	}
-
-	success := *statusCode == http.StatusOK
-
-	fmt.Printf("GetAccount statusCode: %d, success: %v\n", *statusCode, success)
-	// fmt.Printf("GetAccount response: %d, %s\n\n", *statusCode, string(body))
 
 }
 

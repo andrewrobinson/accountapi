@@ -3,6 +3,7 @@ package client
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -49,8 +50,37 @@ func NewAccountRestClient(endpoint string) *AccountRestClient {
 	return &AccountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
 }
 
-// TODO - make it return a struct
-func (c *AccountRestClient) Fetch(id uuid.UUID) ([]byte, *int, error) {
+func (c *AccountRestClient) Fetch(id uuid.UUID) (model.AccountData, error) {
+	var ret model.AccountData
+
+	body, statusCode, err := c.fetchInternal(id)
+
+	if err != nil {
+		return ret, err
+	}
+
+	success := *statusCode == http.StatusOK
+
+	fmt.Printf("fetchInternal response: %d, %s\n", *statusCode, string(body))
+
+	if success {
+
+		err := json.Unmarshal(body, &ret)
+
+		if err != nil {
+			return ret, err
+		} else {
+			fmt.Printf("Fetch ret after unmarshall is: %+v\n", ret)
+			return ret, nil
+		}
+
+	} else {
+		return ret, errors.New("NOT FOUND")
+	}
+
+}
+
+func (c *AccountRestClient) fetchInternal(id uuid.UUID) ([]byte, *int, error) {
 
 	url := fmt.Sprintf(c.getUrlFormatString, id)
 
@@ -68,6 +98,10 @@ func (c *AccountRestClient) Fetch(id uuid.UUID) ([]byte, *int, error) {
 	return body, &resp.StatusCode, nil
 
 }
+
+// func (c *AccountRestClient) Create(data model.AccountData) (model.AccountData, error) {
+// 	return c.createInternal(data)
+// }
 
 //TODO - return the body, or marshall the returned out as a struct or return the input struct?
 func (c *AccountRestClient) Create(data model.AccountData) ([]byte, *int, error) {
@@ -94,8 +128,12 @@ func (c *AccountRestClient) Create(data model.AccountData) ([]byte, *int, error)
 	return body, &resp.StatusCode, nil
 }
 
-//TODO - not sure if we actually need the body returned? return it?
 func (c *AccountRestClient) Delete(id uuid.UUID, version int64) ([]byte, *int, error) {
+	return c.deleteInternal(id, version)
+}
+
+//TODO - not sure if we actually need the body returned? return it?
+func (c *AccountRestClient) deleteInternal(id uuid.UUID, version int64) ([]byte, *int, error) {
 
 	deleteUrl := fmt.Sprintf(c.deleteUrlFormatString, id, version)
 
@@ -119,6 +157,7 @@ func (c *AccountRestClient) Delete(id uuid.UUID, version int64) ([]byte, *int, e
 //private methods
 
 //TODO - prove these actually have the effect compared to inlining them
+// a test assertion about headers?
 func setCommonHeaders(req *http.Request) {
 	req.Header.Set("Accept", "application/vnd.api+json")
 	req.Header.Set("Date", "{request_date}")
