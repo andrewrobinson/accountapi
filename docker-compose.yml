@@ -45,6 +45,11 @@ services:
       image: golang:1.16.6-stretch
       depends_on:
         - accountapi
+      healthcheck:
+        test: ["CMD", "curl", "-f", "http://accountapi:8080/v1/organisation/accounts"]
+        interval: 5s
+        timeout: 10s
+        retries: 5
       volumes:
         - .:/go-with-compose
       working_dir: /go-with-compose

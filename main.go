@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/andrewrobinson/accountapi/client"
 )
@@ -12,9 +11,7 @@ import (
 //package names clashing with module name ... ?
 
 func main() {
-	fmt.Println("hello world, sleeping for 5")
-
-	time.Sleep(5 * time.Second)
+	fmt.Println("hello world")
 
 	get()
 	create()
