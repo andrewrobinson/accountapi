@@ -44,16 +44,28 @@ func ReturnFive(in int) int {
 	return 5
 }
 
+// https://www.sohamkamani.com/golang/2018-06-20-golang-factory-patterns/
+
 func NewAccountClient(endpoint string) AccountClient {
 	httpClient := initHTTPClient()
 
 	getUrlFormatString := endpoint + "/%s"
 	deleteUrlFormatString := endpoint + "/%s?version=%d"
 
-	nar := &AccountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
-	var accountClient AccountClient = nar
-	return accountClient
+	return &AccountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
+
 }
+
+// func NewAccountClient(endpoint string) AccountClient {
+// 	httpClient := initHTTPClient()
+
+// 	getUrlFormatString := endpoint + "/%s"
+// 	deleteUrlFormatString := endpoint + "/%s?version=%d"
+
+// 	nar := &AccountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
+// 	var accountClient AccountClient = nar
+// 	return accountClient
+// }
 
 // func NewAccountRestClient(endpoint string) *AccountRestClient {
 // 	httpClient := initHTTPClient()
