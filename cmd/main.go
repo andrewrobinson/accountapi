@@ -41,37 +41,17 @@ func fetch(accountRestClient *client.AccountRestClient, id uuid.UUID) {
 
 }
 
-func buildAccountData(id uuid.UUID) model.AccountData {
-
-	country := "GB"
-	accountClassification := "Personal"
-
-	att := model.AccountAttributes{Name: []string{"Samantha Holder"},
-		Country: &country, BaseCurrency: "GBP", BankID: "400302", BankIDCode: "GBDSC",
-		AccountNumber: "10000004", CustomerID: "234", Iban: "GB28NWBK40030212764204", Bic: "NWBKGB42", AccountClassification: &accountClassification,
-	}
-
-	m := model.Account{ID: id,
-		OrganisationID: "eb0bd6f5-c3f5-44b2-b677-acd23cdde73c",
-		Type:           "accounts", Attributes: &att}
-
-	return model.AccountData{Data: &m}
-}
-
 func create(accountRestClient *client.AccountRestClient, id uuid.UUID) {
 
-	data := buildAccountData(id)
+	data := buildAccountDataForCreate(id)
 
-	_, statusCode, err := accountRestClient.Create(data)
+	accountData, err := accountRestClient.Create(data)
 
 	if err != nil {
-		fmt.Printf("%+v", err)
-		os.Exit(1)
+		fmt.Printf("create failure, err: %+v\n", err)
+	} else {
+		fmt.Printf("create success returned attributes: %+v with id:%s\n", accountData.Data.Attributes, accountData.Data.ID)
 	}
-
-	success := *statusCode == http.StatusCreated
-
-	fmt.Printf("CreateAccount statusCode: %d, success: %v\n", *statusCode, success)
 
 }
 
@@ -88,4 +68,21 @@ func delete(accountRestClient *client.AccountRestClient, id uuid.UUID) {
 
 	fmt.Printf("DeleteAccount statusCode: %d, success: %v\n", *statusCode, success)
 
+}
+
+func buildAccountDataForCreate(id uuid.UUID) model.AccountData {
+
+	country := "GB"
+	accountClassification := "Personal"
+
+	att := model.AccountAttributes{Name: []string{"Samantha Holder"},
+		Country: &country, BaseCurrency: "GBP", BankID: "400302", BankIDCode: "GBDSC",
+		AccountNumber: "10000004", CustomerID: "234", Iban: "GB28NWBK40030212764204", Bic: "NWBKGB42", AccountClassification: &accountClassification,
+	}
+
+	m := model.Account{ID: id,
+		OrganisationID: "eb0bd6f5-c3f5-44b2-b677-acd23cdde73c",
+		Type:           "accounts", Attributes: &att}
+
+	return model.AccountData{Data: &m}
 }

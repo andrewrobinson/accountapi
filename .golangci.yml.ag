@@ -1,0 +1,19 @@
+linters:
+  enable-all: true
+  disable:
+    - dupl
+    - lll
+    - nakedret
+    - unparam
+    - maligned
+
+linters-settings:
+  unused:
+    check-exported: true
+  gocyclo:
+    min-complexity: 10
+
+run:
+  build-tags:
+    - unit_test
+    - integration_test

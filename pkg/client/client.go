@@ -61,7 +61,7 @@ func (c *AccountRestClient) Fetch(id uuid.UUID) (model.AccountData, error) {
 
 	success := *statusCode == http.StatusOK
 
-	fmt.Printf("fetchInternal response: %d, %s\n", *statusCode, string(body))
+	// fmt.Printf("fetchInternal response: %d, %s\n", *statusCode, string(body))
 
 	if success {
 
@@ -70,7 +70,7 @@ func (c *AccountRestClient) Fetch(id uuid.UUID) (model.AccountData, error) {
 		if err != nil {
 			return ret, err
 		} else {
-			fmt.Printf("Fetch ret after unmarshall is: %+v\n", ret)
+			// fmt.Printf("Fetch ret after unmarshall is: %+v\n", ret)
 			return ret, nil
 		}
 
@@ -80,52 +80,34 @@ func (c *AccountRestClient) Fetch(id uuid.UUID) (model.AccountData, error) {
 
 }
 
-func (c *AccountRestClient) fetchInternal(id uuid.UUID) ([]byte, *int, error) {
+//the code in here is so similar to in Fetch ....
+func (c *AccountRestClient) Create(data model.AccountData) (model.AccountData, error) {
+	var ret model.AccountData
 
-	url := fmt.Sprintf(c.getUrlFormatString, id)
-
-	resp, err := c.doGet(url)
-	if err != nil {
-		return nil, nil, err
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return body, &resp.StatusCode, nil
-
-}
-
-// func (c *AccountRestClient) Create(data model.AccountData) (model.AccountData, error) {
-// 	return c.createInternal(data)
-// }
-
-//TODO - return the body, or marshall the returned out as a struct or return the input struct?
-func (c *AccountRestClient) Create(data model.AccountData) ([]byte, *int, error) {
-
-	json, err := json.Marshal(data)
-
-	// fmt.Printf("CreateAccount body json:%s\n\n", json)
+	body, statusCode, err := c.createInternal(data)
 
 	if err != nil {
-		return nil, nil, err
+		return ret, err
 	}
 
-	resp, err := c.doPost(c.endpoint, json)
-	if err != nil {
-		return nil, nil, err
-	}
-	defer resp.Body.Close()
+	success := *statusCode == http.StatusCreated
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, nil, err
-	}
+	// fmt.Printf("createInternal response: %d, %s\n", *statusCode, string(body))
 
-	return body, &resp.StatusCode, nil
+	if success {
+
+		err := json.Unmarshal(body, &ret)
+
+		if err != nil {
+			return ret, err
+		} else {
+			// fmt.Printf("Create ret after unmarshall is: %+v\n", ret)
+			return ret, nil
+		}
+
+	} else {
+		return ret, errors.New(fmt.Sprintf("statusCode not 201:%d", *statusCode))
+	}
 }
 
 func (c *AccountRestClient) Delete(id uuid.UUID, version int64) ([]byte, *int, error) {
