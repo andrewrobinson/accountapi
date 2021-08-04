@@ -8,6 +8,7 @@ import (
 
 	"github.com/andrewrobinson/accountapi/pkg/client"
 	"github.com/andrewrobinson/accountapi/pkg/client/model"
+	uuid "github.com/satori/go.uuid"
 )
 
 func main() {
@@ -19,16 +20,18 @@ func main() {
 
 	accountRestClient := client.NewAccountRestClient(*endpointFlag)
 
-	fetch(accountRestClient)
-	create(accountRestClient)
-	fetch(accountRestClient)
-	delete(accountRestClient)
+	id := uuid.FromStringOrNil("ad27e265-9605-4b4b-a0e5-3003ea9cc4dc")
+
+	fetch(accountRestClient, id)
+	create(accountRestClient, id)
+	fetch(accountRestClient, id)
+	delete(accountRestClient, id)
 
 }
 
-func fetch(accountRestClient *client.AccountRestClient) {
+func fetch(accountRestClient *client.AccountRestClient, id uuid.UUID) {
 
-	_, statusCode, err := accountRestClient.Fetch("ad27e265-9605-4b4b-a0e5-3003ea9cc4dc")
+	_, statusCode, err := accountRestClient.Fetch(id)
 
 	if err != nil {
 		fmt.Printf("%+v", err)
@@ -42,7 +45,7 @@ func fetch(accountRestClient *client.AccountRestClient) {
 
 }
 
-func create(accountRestClient *client.AccountRestClient) {
+func create(accountRestClient *client.AccountRestClient, id uuid.UUID) {
 
 	country := "GB"
 	accountClassification := "Personal"
@@ -52,7 +55,7 @@ func create(accountRestClient *client.AccountRestClient) {
 		AccountNumber: "10000004", CustomerID: "234", Iban: "GB28NWBK40030212764204", Bic: "NWBKGB42", AccountClassification: &accountClassification,
 	}
 
-	m := model.Account{ID: "ad27e265-9605-4b4b-a0e5-3003ea9cc4dc",
+	m := model.Account{ID: id,
 		OrganisationID: "eb0bd6f5-c3f5-44b2-b677-acd23cdde73c",
 		Type:           "accounts", Attributes: &att}
 
@@ -73,9 +76,9 @@ func create(accountRestClient *client.AccountRestClient) {
 
 }
 
-func delete(accountRestClient *client.AccountRestClient) {
+func delete(accountRestClient *client.AccountRestClient, id uuid.UUID) {
 
-	_, statusCode, err := accountRestClient.Delete("ad27e265-9605-4b4b-a0e5-3003ea9cc4dc", 0)
+	_, statusCode, err := accountRestClient.Delete(id, 0)
 
 	if err != nil {
 		fmt.Printf("%+v", err)

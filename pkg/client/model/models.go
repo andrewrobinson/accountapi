@@ -1,5 +1,7 @@
 package model
 
+import uuid "github.com/satori/go.uuid"
+
 type AccountData struct {
 	Data *Account `json:"data,omitempty"`
 }
@@ -10,7 +12,7 @@ type AccountData struct {
 
 type Account struct {
 	Attributes     *AccountAttributes `json:"attributes,omitempty"`
-	ID             string             `json:"id,omitempty"`
+	ID             uuid.UUID          `json:"id,omitempty"`
 	OrganisationID string             `json:"organisation_id,omitempty"`
 	Type           string             `json:"type,omitempty"`
 	Version        *int64             `json:"version,omitempty"`

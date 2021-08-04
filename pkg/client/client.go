@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/andrewrobinson/accountapi/pkg/client/model"
+	uuid "github.com/satori/go.uuid"
 )
 
 type AccountRestClient struct {
@@ -49,7 +50,7 @@ func NewAccountRestClient(endpoint string) *AccountRestClient {
 }
 
 // TODO - make it return a struct
-func (c *AccountRestClient) Fetch(id string) ([]byte, *int, error) {
+func (c *AccountRestClient) Fetch(id uuid.UUID) ([]byte, *int, error) {
 
 	url := fmt.Sprintf(c.getUrlFormatString, id)
 
@@ -94,7 +95,7 @@ func (c *AccountRestClient) Create(data model.AccountData) ([]byte, *int, error)
 }
 
 //TODO - not sure if we actually need the body returned? return it?
-func (c *AccountRestClient) Delete(id string, version int64) ([]byte, *int, error) {
+func (c *AccountRestClient) Delete(id uuid.UUID, version int64) ([]byte, *int, error) {
 
 	deleteUrl := fmt.Sprintf(c.deleteUrlFormatString, id, version)
 
