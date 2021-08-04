@@ -1,4 +1,4 @@
-package client
+package model
 
 //TODO - we really want some client.models package?
 

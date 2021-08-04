@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/andrewrobinson/accountapi/pkg/client/model"
 )
 
 type AccountRestClient struct {
@@ -65,7 +67,7 @@ func (c *AccountRestClient) Fetch(id string) ([]byte, *int, error) {
 
 }
 
-func (c *AccountRestClient) Create(data Data) ([]byte, *int, error) {
+func (c *AccountRestClient) Create(data model.Data) ([]byte, *int, error) {
 
 	json, err := json.Marshal(data)
 

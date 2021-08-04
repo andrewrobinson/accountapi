@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/andrewrobinson/accountapi/pkg/client"
+	"github.com/andrewrobinson/accountapi/pkg/client/model"
 )
 
 func main() {
@@ -45,18 +46,17 @@ func create(accountRestClient *client.AccountRestClient) {
 
 	country := "GB"
 	accountClassification := "Personal"
-	// version := int64(0)
 
-	att := client.AccountAttributes{Name: []string{"Samantha Holder"},
+	att := model.AccountAttributes{Name: []string{"Samantha Holder"},
 		Country: &country, BaseCurrency: "GBP", BankID: "400302", BankIDCode: "GBDSC",
 		AccountNumber: "10000004", CustomerID: "234", Iban: "GB28NWBK40030212764204", Bic: "NWBKGB42", AccountClassification: &accountClassification,
 	}
 
-	m := client.AccountData{ID: "ad27e265-9605-4b4b-a0e5-3003ea9cc4dc",
+	m := model.AccountData{ID: "ad27e265-9605-4b4b-a0e5-3003ea9cc4dc",
 		OrganisationID: "eb0bd6f5-c3f5-44b2-b677-acd23cdde73c",
 		Type:           "accounts", Attributes: &att}
 
-	data := client.Data{Data: &m}
+	data := model.Data{Data: &m}
 
 	// fmt.Printf("model data: %+v", data)
 
