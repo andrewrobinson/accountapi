@@ -1,26 +1,21 @@
 package model
 
-//TODO - we really want some client.models package?
-
 //this could be AccountData
-type Data struct {
-	Data *AccountData `json:"data,omitempty"`
+type AccountData struct {
+	Data *Account `json:"data,omitempty"`
 }
 
 // Account represents an account in the form3 org section.
 // See https://api-docs.form3.tech/api.html#organisation-accounts for
 // more information about fields.
 
-//this could be Account
-type AccountData struct {
+type Account struct {
 	Attributes     *AccountAttributes `json:"attributes,omitempty"`
 	ID             string             `json:"id,omitempty"`
 	OrganisationID string             `json:"organisation_id,omitempty"`
 	Type           string             `json:"type,omitempty"`
 	Version        *int64             `json:"version,omitempty"`
 }
-
-// I added 	//customer_id
 
 type AccountAttributes struct {
 	AccountClassification   *string  `json:"account_classification,omitempty"`

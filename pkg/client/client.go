@@ -67,7 +67,7 @@ func (c *AccountRestClient) Fetch(id string) ([]byte, *int, error) {
 
 }
 
-func (c *AccountRestClient) Create(data model.Data) ([]byte, *int, error) {
+func (c *AccountRestClient) Create(data model.AccountData) ([]byte, *int, error) {
 
 	json, err := json.Marshal(data)
 

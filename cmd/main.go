@@ -52,11 +52,11 @@ func create(accountRestClient *client.AccountRestClient) {
 		AccountNumber: "10000004", CustomerID: "234", Iban: "GB28NWBK40030212764204", Bic: "NWBKGB42", AccountClassification: &accountClassification,
 	}
 
-	m := model.AccountData{ID: "ad27e265-9605-4b4b-a0e5-3003ea9cc4dc",
+	m := model.Account{ID: "ad27e265-9605-4b4b-a0e5-3003ea9cc4dc",
 		OrganisationID: "eb0bd6f5-c3f5-44b2-b677-acd23cdde73c",
 		Type:           "accounts", Attributes: &att}
 
-	data := model.Data{Data: &m}
+	data := model.AccountData{Data: &m}
 
 	// fmt.Printf("model data: %+v", data)
 
