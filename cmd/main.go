@@ -16,20 +16,23 @@ func main() {
 
 	fmt.Printf("main running against endpoint:%s\n", *endpointFlag)
 
-	accountRestClient := client.NewAccountRestClient(*endpointFlag)
+	// accountRestClient := client.NewAccountRestClient(*endpointFlag)
+	// var accountClient client.AccountClient = accountRestClient
+
+	accountClient := client.NewAccountClient(*endpointFlag)
 
 	id := uuid.FromStringOrNil("ad27e265-9605-4b4b-a0e5-3003ea9cc4dc")
 
-	fetch(accountRestClient, id)
-	create(accountRestClient, id)
-	fetch(accountRestClient, id)
-	delete(accountRestClient, id)
+	fetch(accountClient, id)
+	create(accountClient, id)
+	fetch(accountClient, id)
+	delete(accountClient, id)
 
 }
 
-func fetch(accountRestClient *client.AccountRestClient, id uuid.UUID) {
+func fetch(accountClient client.AccountClient, id uuid.UUID) {
 
-	fetchedAccountData, err := accountRestClient.Fetch(id)
+	fetchedAccountData, err := accountClient.Fetch(id)
 
 	if err != nil {
 		fmt.Printf("fetch failure, err: %+v\n", err)
@@ -40,7 +43,7 @@ func fetch(accountRestClient *client.AccountRestClient, id uuid.UUID) {
 
 }
 
-func create(accountRestClient *client.AccountRestClient, id uuid.UUID) {
+func create(accountRestClient client.AccountClient, id uuid.UUID) {
 
 	data := buildAccountDataForCreate(id)
 
@@ -55,7 +58,7 @@ func create(accountRestClient *client.AccountRestClient, id uuid.UUID) {
 
 }
 
-func delete(accountRestClient *client.AccountRestClient, id uuid.UUID) {
+func delete(accountRestClient client.AccountClient, id uuid.UUID) {
 
 	err := accountRestClient.Delete(id, 0)
 

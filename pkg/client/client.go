@@ -11,6 +11,12 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+type AccountClient interface {
+	Fetch(id uuid.UUID) (model.FetchedAccountData, error)
+	Create(data model.AccountDataForCreate) (model.AccountDataForCreate, error)
+	Delete(id uuid.UUID, version int64) error
+}
+
 type AccountRestClient struct {
 	endpoint              string
 	getUrlFormatString    string
@@ -38,15 +44,26 @@ func ReturnFive(in int) int {
 	return 5
 }
 
-func NewAccountRestClient(endpoint string) *AccountRestClient {
+func NewAccountClient(endpoint string) AccountClient {
 	httpClient := initHTTPClient()
 
-	//TODO - any better way of storing and not exposing these?
 	getUrlFormatString := endpoint + "/%s"
 	deleteUrlFormatString := endpoint + "/%s?version=%d"
 
-	return &AccountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
+	nar := &AccountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
+	var accountClient AccountClient = nar
+	return accountClient
 }
+
+// func NewAccountRestClient(endpoint string) *AccountRestClient {
+// 	httpClient := initHTTPClient()
+
+// 	//TODO - any better way of storing and not exposing these?
+// 	getUrlFormatString := endpoint + "/%s"
+// 	deleteUrlFormatString := endpoint + "/%s?version=%d"
+
+// 	return &AccountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
+// }
 
 func (c *AccountRestClient) Fetch(id uuid.UUID) (model.FetchedAccountData, error) {
 	var ret model.FetchedAccountData
