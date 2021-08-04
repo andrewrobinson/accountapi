@@ -62,7 +62,7 @@ func delete(accountRestClient *client.AccountRestClient, id uuid.UUID) {
 	if err != nil {
 		fmt.Printf("delete failure, err: %+v\n", err)
 	} else {
-		fmt.Println("delete success\n\n")
+		fmt.Println("delete success")
 	}
 
 }

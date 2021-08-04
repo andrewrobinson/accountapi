@@ -60,33 +60,7 @@ func (c *AccountRestClient) Fetch(id uuid.UUID) (model.FetchedAccountData, error
 
 	success := *statusCode == http.StatusOK
 
-	fmt.Printf("fetchInternal response: %d, %s\n", *statusCode, string(body))
-
-	// {
-	// 	"data": {
-	// 		"attributes": {
-	// 			"account_classification": "Personal",
-	// 			"account_number": "10000004",
-	// 			"alternative_names": null,
-	// 			"bank_id": "400302",
-	// 			"bank_id_code": "GBDSC",
-	// 			"base_currency": "GBP",
-	// 			"bic": "NWBKGB42",
-	// 			"country": "GB",
-	// 			"iban": "GB28NWBK40030212764204",
-	// 			"name": ["Samantha Holder"]
-	// 		},
-	// 		"created_on": "2021-08-04T21:20:48.639Z",
-	// 		"id": "ad27e265-9605-4b4b-a0e5-3003ea9cc4dc",
-	// 		"modified_on": "2021-08-04T21:20:48.639Z",
-	// 		"organisation_id": "eb0bd6f5-c3f5-44b2-b677-acd23cdde73c",
-	// 		"type": "accounts",
-	// 		"version": 0
-	// 	},
-	// 	"links": {
-	// 		"self": "/v1/organisation/accounts/ad27e265-9605-4b4b-a0e5-3003ea9cc4dc"
-	// 	}
-	// }
+	// fmt.Printf("fetchInternal response: %d, %s\n", *statusCode, string(body))
 
 	if success {
 
@@ -131,7 +105,7 @@ func (c *AccountRestClient) Create(data model.AccountDataForCreate) (model.Accou
 		}
 
 	} else {
-		return ret, errors.New(fmt.Sprintf("statusCode not 201:%d", *statusCode))
+		return ret, fmt.Errorf("statusCode not 201:%d", *statusCode)
 	}
 }
 
@@ -150,7 +124,7 @@ func (c *AccountRestClient) Delete(id uuid.UUID, version int64) error {
 	if success {
 		return nil
 	} else {
-		return errors.New(fmt.Sprintf("statusCode not 204:%d", *statusCode))
+		return fmt.Errorf("statusCode not 204:%d", *statusCode)
 	}
 
 }

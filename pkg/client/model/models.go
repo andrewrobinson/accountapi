@@ -15,10 +15,6 @@ type Links struct {
 	Self *string `json:"self"`
 }
 
-// Account represents an account in the form3 org section.
-// See https://api-docs.form3.tech/api.html#organisation-accounts for
-// more information about fields.
-
 type Account struct {
 	Attributes     *AccountAttributes `json:"attributes,omitempty"`
 	ID             uuid.UUID          `json:"id,omitempty"`
