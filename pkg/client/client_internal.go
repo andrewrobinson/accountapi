@@ -49,3 +49,25 @@ func (c *AccountRestClient) createInternal(data model.AccountData) ([]byte, *int
 
 	return body, &resp.StatusCode, nil
 }
+
+//this returns the body but Delete discards it
+func (c *AccountRestClient) deleteInternal(id uuid.UUID, version int64) ([]byte, *int, error) {
+
+	deleteUrl := fmt.Sprintf(c.deleteUrlFormatString, id, version)
+
+	// fmt.Printf("DeleteAccount passed id:%s, gives deleteUrl:%s\n", id, deleteUrl)
+
+	resp, err := c.doDelete(deleteUrl)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return body, &resp.StatusCode, nil
+
+}

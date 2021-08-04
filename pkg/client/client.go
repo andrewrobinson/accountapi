@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -110,29 +109,23 @@ func (c *AccountRestClient) Create(data model.AccountData) (model.AccountData, e
 	}
 }
 
-func (c *AccountRestClient) Delete(id uuid.UUID, version int64) ([]byte, *int, error) {
-	return c.deleteInternal(id, version)
-}
+func (c *AccountRestClient) Delete(id uuid.UUID, version int64) error {
 
-//TODO - not sure if we actually need the body returned? return it?
-func (c *AccountRestClient) deleteInternal(id uuid.UUID, version int64) ([]byte, *int, error) {
+	_, statusCode, err := c.deleteInternal(id, version)
 
-	deleteUrl := fmt.Sprintf(c.deleteUrlFormatString, id, version)
-
-	// fmt.Printf("DeleteAccount passed id:%s, gives deleteUrl:%s\n", id, deleteUrl)
-
-	resp, err := c.doDelete(deleteUrl)
 	if err != nil {
-		return nil, nil, err
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, nil, err
+		return err
 	}
 
-	return body, &resp.StatusCode, nil
+	success := *statusCode == http.StatusNoContent
+
+	// fmt.Printf("deleteInternal response: %d, %s\n", *statusCode, string(body))
+
+	if success {
+		return nil
+	} else {
+		return errors.New(fmt.Sprintf("statusCode not 204:%d", *statusCode))
+	}
 
 }
 

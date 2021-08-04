@@ -3,8 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"net/http"
-	"os"
 
 	"github.com/andrewrobinson/accountapi/pkg/client"
 	"github.com/andrewrobinson/accountapi/pkg/client/model"
@@ -36,7 +34,7 @@ func fetch(accountRestClient *client.AccountRestClient, id uuid.UUID) {
 	if err != nil {
 		fmt.Printf("fetch failure, err: %+v\n", err)
 	} else {
-		fmt.Printf("fetch success returned attributes: %+v with id:%s\n", accountData.Data.Attributes, accountData.Data.ID)
+		fmt.Printf("fetch success returned attributes: %+v with id:%s\n\n", accountData.Data.Attributes, accountData.Data.ID)
 	}
 
 }
@@ -50,23 +48,20 @@ func create(accountRestClient *client.AccountRestClient, id uuid.UUID) {
 	if err != nil {
 		fmt.Printf("create failure, err: %+v\n", err)
 	} else {
-		fmt.Printf("create success returned attributes: %+v with id:%s\n", accountData.Data.Attributes, accountData.Data.ID)
+		fmt.Printf("create success returned attributes: %+v with id:%s\n\n", accountData.Data.Attributes, accountData.Data.ID)
 	}
 
 }
 
 func delete(accountRestClient *client.AccountRestClient, id uuid.UUID) {
 
-	_, statusCode, err := accountRestClient.Delete(id, 0)
+	err := accountRestClient.Delete(id, 0)
 
 	if err != nil {
-		fmt.Printf("%+v", err)
-		os.Exit(1)
+		fmt.Printf("delete failure, err: %+v\n", err)
+	} else {
+		fmt.Println("delete success\n\n")
 	}
-
-	success := *statusCode == http.StatusNoContent
-
-	fmt.Printf("DeleteAccount statusCode: %d, success: %v\n", *statusCode, success)
 
 }
 
