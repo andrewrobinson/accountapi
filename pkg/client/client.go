@@ -49,8 +49,8 @@ func NewAccountRestClient(endpoint string) *AccountRestClient {
 	return &AccountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
 }
 
-func (c *AccountRestClient) Fetch(id uuid.UUID) (model.AccountData, error) {
-	var ret model.AccountData
+func (c *AccountRestClient) Fetch(id uuid.UUID) (model.FetchedAccountData, error) {
+	var ret model.FetchedAccountData
 
 	body, statusCode, err := c.fetchInternal(id)
 
@@ -60,7 +60,33 @@ func (c *AccountRestClient) Fetch(id uuid.UUID) (model.AccountData, error) {
 
 	success := *statusCode == http.StatusOK
 
-	// fmt.Printf("fetchInternal response: %d, %s\n", *statusCode, string(body))
+	fmt.Printf("fetchInternal response: %d, %s\n", *statusCode, string(body))
+
+	// {
+	// 	"data": {
+	// 		"attributes": {
+	// 			"account_classification": "Personal",
+	// 			"account_number": "10000004",
+	// 			"alternative_names": null,
+	// 			"bank_id": "400302",
+	// 			"bank_id_code": "GBDSC",
+	// 			"base_currency": "GBP",
+	// 			"bic": "NWBKGB42",
+	// 			"country": "GB",
+	// 			"iban": "GB28NWBK40030212764204",
+	// 			"name": ["Samantha Holder"]
+	// 		},
+	// 		"created_on": "2021-08-04T21:20:48.639Z",
+	// 		"id": "ad27e265-9605-4b4b-a0e5-3003ea9cc4dc",
+	// 		"modified_on": "2021-08-04T21:20:48.639Z",
+	// 		"organisation_id": "eb0bd6f5-c3f5-44b2-b677-acd23cdde73c",
+	// 		"type": "accounts",
+	// 		"version": 0
+	// 	},
+	// 	"links": {
+	// 		"self": "/v1/organisation/accounts/ad27e265-9605-4b4b-a0e5-3003ea9cc4dc"
+	// 	}
+	// }
 
 	if success {
 
@@ -80,8 +106,8 @@ func (c *AccountRestClient) Fetch(id uuid.UUID) (model.AccountData, error) {
 }
 
 //the code in here is so similar to in Fetch ....
-func (c *AccountRestClient) Create(data model.AccountData) (model.AccountData, error) {
-	var ret model.AccountData
+func (c *AccountRestClient) Create(data model.AccountDataForCreate) (model.AccountDataForCreate, error) {
+	var ret model.AccountDataForCreate
 
 	body, statusCode, err := c.createInternal(data)
 

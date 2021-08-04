@@ -29,12 +29,13 @@ func main() {
 
 func fetch(accountRestClient *client.AccountRestClient, id uuid.UUID) {
 
-	accountData, err := accountRestClient.Fetch(id)
+	fetchedAccountData, err := accountRestClient.Fetch(id)
 
 	if err != nil {
 		fmt.Printf("fetch failure, err: %+v\n", err)
 	} else {
-		fmt.Printf("fetch success returned attributes: %+v with id:%s\n\n", accountData.Data.Attributes, accountData.Data.ID)
+		fmt.Printf("fetch success returned attributes: %+v, links:%s with id:%s\n\n",
+			fetchedAccountData.Data.Attributes, *fetchedAccountData.Links.Self, fetchedAccountData.Data.ID)
 	}
 
 }
@@ -48,7 +49,8 @@ func create(accountRestClient *client.AccountRestClient, id uuid.UUID) {
 	if err != nil {
 		fmt.Printf("create failure, err: %+v\n", err)
 	} else {
-		fmt.Printf("create success returned attributes: %+v with id:%s\n\n", accountData.Data.Attributes, accountData.Data.ID)
+		fmt.Printf("create success returned attributes: %+v with id:%s\n\n",
+			accountData.Data.Attributes, accountData.Data.ID)
 	}
 
 }
@@ -65,7 +67,7 @@ func delete(accountRestClient *client.AccountRestClient, id uuid.UUID) {
 
 }
 
-func buildAccountDataForCreate(id uuid.UUID) model.AccountData {
+func buildAccountDataForCreate(id uuid.UUID) model.AccountDataForCreate {
 
 	country := "GB"
 	accountClassification := "Personal"
@@ -79,5 +81,5 @@ func buildAccountDataForCreate(id uuid.UUID) model.AccountData {
 		OrganisationID: "eb0bd6f5-c3f5-44b2-b677-acd23cdde73c",
 		Type:           "accounts", Attributes: &att}
 
-	return model.AccountData{Data: &m}
+	return model.AccountDataForCreate{Data: &m}
 }

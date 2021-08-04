@@ -28,7 +28,7 @@ func (c *AccountRestClient) fetchInternal(id uuid.UUID) ([]byte, *int, error) {
 
 }
 
-func (c *AccountRestClient) createInternal(data model.AccountData) ([]byte, *int, error) {
+func (c *AccountRestClient) createInternal(data model.AccountDataForCreate) ([]byte, *int, error) {
 
 	json, err := json.Marshal(data)
 
@@ -54,8 +54,6 @@ func (c *AccountRestClient) createInternal(data model.AccountData) ([]byte, *int
 func (c *AccountRestClient) deleteInternal(id uuid.UUID, version int64) ([]byte, *int, error) {
 
 	deleteUrl := fmt.Sprintf(c.deleteUrlFormatString, id, version)
-
-	// fmt.Printf("DeleteAccount passed id:%s, gives deleteUrl:%s\n", id, deleteUrl)
 
 	resp, err := c.doDelete(deleteUrl)
 	if err != nil {

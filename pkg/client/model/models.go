@@ -2,8 +2,17 @@ package model
 
 import uuid "github.com/satori/go.uuid"
 
-type AccountData struct {
+type AccountDataForCreate struct {
 	Data *Account `json:"data,omitempty"`
+}
+
+type FetchedAccountData struct {
+	Data  *Account `json:"data,omitempty"`
+	Links *Links   `json:"links,omitempty"`
+}
+
+type Links struct {
+	Self *string `json:"self"`
 }
 
 // Account represents an account in the form3 org section.
