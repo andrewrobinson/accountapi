@@ -1,5 +1,7 @@
 package client
 
+//can use client_test here, but lose ability to get to internals for delete
+
 import (
 	"flag"
 	"fmt"
@@ -14,7 +16,7 @@ import (
 
 var endpointFlag = flag.String("endpoint", "http://localhost:8080/v1/organisation/accounts", "")
 
-func TestClient(t *testing.T) {
+func TestClientIntegration(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Client Integration Suite")
 }
