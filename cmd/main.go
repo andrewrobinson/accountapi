@@ -3,11 +3,25 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
+	"time"
 
 	"github.com/andrewrobinson/accountapi/pkg/client"
 	"github.com/andrewrobinson/accountapi/pkg/client/model"
 	uuid "github.com/satori/go.uuid"
 )
+
+// this might be a way of giving defaults and overriding them
+// https://www.sohamkamani.com/golang/options-pattern/
+func initHTTPClient() *http.Client {
+	return &http.Client{
+		Timeout: time.Second * 30,
+		Transport: &http.Transport{
+			MaxIdleConns:        5,
+			MaxIdleConnsPerHost: 1,
+		},
+	}
+}
 
 func main() {
 
@@ -19,7 +33,7 @@ func main() {
 	// accountRestClient := client.NewAccountRestClient(*endpointFlag)
 	// var accountClient client.AccountClient = accountRestClient
 
-	accountClient := client.NewAccountClient(*endpointFlag)
+	accountClient := client.NewAccountClient(*endpointFlag, initHTTPClient())
 
 	id := uuid.FromStringOrNil("ad27e265-9605-4b4b-a0e5-3003ea9cc4dc")
 

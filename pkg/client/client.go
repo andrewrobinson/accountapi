@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/andrewrobinson/accountapi/pkg/client/model"
 	uuid "github.com/satori/go.uuid"
@@ -26,8 +25,7 @@ type accountRestClient struct {
 
 // returns the interface, could be used this way by the end user
 // https://www.sohamkamani.com/golang/2018-06-20-golang-factory-patterns/
-func NewAccountClient(endpoint string) AccountClient {
-	httpClient := initHTTPClient()
+func NewAccountClient(endpoint string, httpClient *http.Client) AccountClient {
 	getUrlFormatString := endpoint + "/%s"
 	deleteUrlFormatString := endpoint + "/%s?version=%d"
 	return &accountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
@@ -35,23 +33,10 @@ func NewAccountClient(endpoint string) AccountClient {
 }
 
 //returns the struct. useful at test time to get hold of the deleteInternal method
-func NewAccountRestClient(endpoint string) *accountRestClient {
-	httpClient := initHTTPClient()
+func NewAccountRestClient(endpoint string, httpClient *http.Client) *accountRestClient {
 	getUrlFormatString := endpoint + "/%s"
 	deleteUrlFormatString := endpoint + "/%s?version=%d"
 	return &accountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
-}
-
-// this might be a way of giving defaults and overriding them
-// https://www.sohamkamani.com/golang/options-pattern/
-func initHTTPClient() *http.Client {
-	return &http.Client{
-		Timeout: time.Second * 30,
-		Transport: &http.Transport{
-			MaxIdleConns:        5,
-			MaxIdleConnsPerHost: 1,
-		},
-	}
 }
 
 func (c *accountRestClient) Fetch(id uuid.UUID) (model.FetchedAccountData, error) {

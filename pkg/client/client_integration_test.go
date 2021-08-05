@@ -5,7 +5,9 @@ package client
 import (
 	"flag"
 	"fmt"
+	"net/http"
 	"testing"
+	"time"
 
 	"github.com/andrewrobinson/accountapi/pkg/client/model"
 	. "github.com/onsi/ginkgo"
@@ -21,11 +23,21 @@ func TestClientIntegration(t *testing.T) {
 	RunSpecs(t, "Client Integration Suite")
 }
 
+func initHTTPClient() *http.Client {
+	return &http.Client{
+		Timeout: time.Second * 30,
+		Transport: &http.Transport{
+			MaxIdleConns:        5,
+			MaxIdleConnsPerHost: 1,
+		},
+	}
+}
+
 var _ = Describe("Client Integration", func() {
 
 	fmt.Printf("Client Integration tests running against endpoint:%s\n", *endpointFlag)
 
-	accountClient := NewAccountRestClient(*endpointFlag)
+	accountClient := NewAccountRestClient(*endpointFlag, initHTTPClient())
 
 	id := uuid.FromStringOrNil("ad27e265-9605-4b4b-a0e5-3003ea9cc4dc")
 
