@@ -22,20 +22,17 @@ var _ = Describe("Client Integration", func() {
 	endpointFlag := flag.String("endpoint", "http://localhost:8080/v1/organisation/accounts", "")
 	flag.Parse()
 
-	// fmt.Printf("Client Integration tests running against endpoint:%s\n", *endpointFlag)
+	fmt.Printf("Client Integration tests running against endpoint:%s\n", *endpointFlag)
 
-	accountClient := NewAccountClient(*endpointFlag)
+	accountClient := NewAccountRestClient(*endpointFlag)
 
 	id := uuid.FromStringOrNil("ad27e265-9605-4b4b-a0e5-3003ea9cc4dc")
 
 	BeforeEach(func() {
-		//cleardown
-		err := accountClient.DeleteForTestCleardown(id, 0)
-		Expect(err).To(BeNil())
 
-		//fetch and expect to find nothing.
-		_, err = accountClient.Fetch(id)
-		Expect(err.Error()).To(Equal("NOT FOUND"))
+		//cleardown via internal method that doesn't care about statusCode
+		_, _, err := accountClient.deleteInternal(id, 0)
+		Expect(err).To(BeNil())
 
 	})
 
@@ -59,13 +56,17 @@ var _ = Describe("Client Integration", func() {
 			expectedLink := fmt.Sprintf("/v1/organisation/accounts/%s", id)
 			Expect(*fetchedAccountData.Links.Self).To(Equal(expectedLink))
 
-			//Delete
+			//Delete and get no error (due to a 204)
 			err = accountClient.Delete(id, 0)
 			Expect(err).To(BeNil())
 
-			//fetch and expect to find nothing.
+			//fetch and it is not found
 			_, err = accountClient.Fetch(id)
 			Expect(err.Error()).To(Equal("NOT FOUND"))
+
+			//Delete and get an error (due to a 404)
+			err = accountClient.Delete(id, 0)
+			Expect(err.Error()).To(Equal("Delete statusCode:404 instead of 204"))
 
 		})
 	})

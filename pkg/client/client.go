@@ -15,7 +15,6 @@ type AccountClient interface {
 	Fetch(id uuid.UUID) (model.FetchedAccountData, error)
 	Create(data model.AccountDataForCreate) (model.AccountDataForCreate, error)
 	Delete(id uuid.UUID, version int64) error
-	DeleteForTestCleardown(id uuid.UUID, version int64) error
 }
 
 type AccountRestClient struct {
@@ -35,7 +34,7 @@ func NewAccountClient(endpoint string) AccountClient {
 
 }
 
-//returns the struct. useful at test time to get hold of an internal method I don't want in the interface
+//returns the struct. useful at test time to get hold of the deleteInternal method
 func NewAccountRestClient(endpoint string) *AccountRestClient {
 	httpClient := initHTTPClient()
 	getUrlFormatString := endpoint + "/%s"
@@ -83,7 +82,6 @@ func (c *AccountRestClient) Fetch(id uuid.UUID) (model.FetchedAccountData, error
 
 }
 
-//the code in here is so similar to in Fetch ....
 func (c *AccountRestClient) Create(data model.AccountDataForCreate) (model.AccountDataForCreate, error) {
 	var ret model.AccountDataForCreate
 
@@ -113,17 +111,6 @@ func (c *AccountRestClient) Create(data model.AccountDataForCreate) (model.Accou
 	}
 }
 
-func (c *AccountRestClient) DeleteForTestCleardown(id uuid.UUID, version int64) error {
-
-	_, _, err := c.deleteInternal(id, version)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (c *AccountRestClient) Delete(id uuid.UUID, version int64) error {
 
 	_, statusCode, err := c.deleteInternal(id, version)
@@ -133,15 +120,12 @@ func (c *AccountRestClient) Delete(id uuid.UUID, version int64) error {
 	}
 
 	//Checking for 204 sort of makes sense but is debatable
-	//Because of this I had to create another delete for use at integration test time
 	success := *statusCode == http.StatusNoContent
-
-	fmt.Printf("deleteInternal response code: %d\n", *statusCode)
 
 	if success {
 		return nil
 	} else {
-		return fmt.Errorf("Delete statusCode not 204:%d", *statusCode)
+		return fmt.Errorf("Delete statusCode:%d instead of 204", *statusCode)
 	}
 
 }
