@@ -17,7 +17,7 @@ type AccountClient interface {
 	Delete(id uuid.UUID, version int64) error
 }
 
-type AccountRestClient struct {
+type accountRestClient struct {
 	endpoint              string
 	getUrlFormatString    string
 	deleteUrlFormatString string
@@ -30,18 +30,20 @@ func NewAccountClient(endpoint string) AccountClient {
 	httpClient := initHTTPClient()
 	getUrlFormatString := endpoint + "/%s"
 	deleteUrlFormatString := endpoint + "/%s?version=%d"
-	return &AccountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
+	return &accountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
 
 }
 
 //returns the struct. useful at test time to get hold of the deleteInternal method
-func NewAccountRestClient(endpoint string) *AccountRestClient {
+func NewAccountRestClient(endpoint string) *accountRestClient {
 	httpClient := initHTTPClient()
 	getUrlFormatString := endpoint + "/%s"
 	deleteUrlFormatString := endpoint + "/%s?version=%d"
-	return &AccountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
+	return &accountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
 }
 
+// this might be a way of giving defaults and overriding them
+// https://www.sohamkamani.com/golang/options-pattern/
 func initHTTPClient() *http.Client {
 	return &http.Client{
 		Timeout: time.Second * 30,
@@ -52,7 +54,7 @@ func initHTTPClient() *http.Client {
 	}
 }
 
-func (c *AccountRestClient) Fetch(id uuid.UUID) (model.FetchedAccountData, error) {
+func (c *accountRestClient) Fetch(id uuid.UUID) (model.FetchedAccountData, error) {
 	var ret model.FetchedAccountData
 
 	body, statusCode, err := c.fetchInternal(id)
@@ -82,7 +84,7 @@ func (c *AccountRestClient) Fetch(id uuid.UUID) (model.FetchedAccountData, error
 
 }
 
-func (c *AccountRestClient) Create(data model.AccountDataForCreate) (model.AccountDataForCreate, error) {
+func (c *accountRestClient) Create(data model.AccountDataForCreate) (model.AccountDataForCreate, error) {
 	var ret model.AccountDataForCreate
 
 	body, statusCode, err := c.createInternal(data)
@@ -111,7 +113,7 @@ func (c *AccountRestClient) Create(data model.AccountDataForCreate) (model.Accou
 	}
 }
 
-func (c *AccountRestClient) Delete(id uuid.UUID, version int64) error {
+func (c *accountRestClient) Delete(id uuid.UUID, version int64) error {
 
 	_, statusCode, err := c.deleteInternal(id, version)
 

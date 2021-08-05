@@ -11,7 +11,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-func (c *AccountRestClient) fetchInternal(id uuid.UUID) ([]byte, *int, error) {
+func (c *accountRestClient) fetchInternal(id uuid.UUID) ([]byte, *int, error) {
 
 	url := fmt.Sprintf(c.getUrlFormatString, id)
 
@@ -30,7 +30,7 @@ func (c *AccountRestClient) fetchInternal(id uuid.UUID) ([]byte, *int, error) {
 
 }
 
-func (c *AccountRestClient) createInternal(data model.AccountDataForCreate) ([]byte, *int, error) {
+func (c *accountRestClient) createInternal(data model.AccountDataForCreate) ([]byte, *int, error) {
 
 	json, err := json.Marshal(data)
 
@@ -53,7 +53,7 @@ func (c *AccountRestClient) createInternal(data model.AccountDataForCreate) ([]b
 }
 
 //this returns the body but Delete discards it
-func (c *AccountRestClient) deleteInternal(id uuid.UUID, version int64) ([]byte, *int, error) {
+func (c *accountRestClient) deleteInternal(id uuid.UUID, version int64) ([]byte, *int, error) {
 
 	deleteUrl := fmt.Sprintf(c.deleteUrlFormatString, id, version)
 
@@ -79,7 +79,7 @@ func setCommonHeaders(req *http.Request) {
 	req.Header.Set("Date", "{request_date}")
 }
 
-func (c *AccountRestClient) doGet(url string) (*http.Response, error) {
+func (c *accountRestClient) doGet(url string) (*http.Response, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
@@ -95,7 +95,7 @@ func (c *AccountRestClient) doGet(url string) (*http.Response, error) {
 	return resp, nil
 }
 
-func (c *AccountRestClient) doDelete(url string) (*http.Response, error) {
+func (c *accountRestClient) doDelete(url string) (*http.Response, error) {
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
 		return nil, err
@@ -111,7 +111,7 @@ func (c *AccountRestClient) doDelete(url string) (*http.Response, error) {
 	return resp, nil
 }
 
-func (c *AccountRestClient) doPost(url string, json []byte) (*http.Response, error) {
+func (c *accountRestClient) doPost(url string, json []byte) (*http.Response, error) {
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(json))
 	if err != nil {
 		return nil, err
