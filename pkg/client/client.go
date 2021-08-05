@@ -10,6 +10,11 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+// HTTPClient interface
+type HTTPClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
 type AccountClient interface {
 	Fetch(id uuid.UUID) (model.FetchedAccountData, error)
 	Create(data model.AccountDataForCreate) (model.AccountDataForCreate, error)
@@ -20,7 +25,8 @@ type accountRestClient struct {
 	endpoint              string
 	getUrlFormatString    string
 	deleteUrlFormatString string
-	httpClient            *http.Client
+	// httpClient            *http.Client
+	httpClient HTTPClient
 }
 
 // returns the interface, could be used this way by the end user
