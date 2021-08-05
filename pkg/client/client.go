@@ -10,7 +10,8 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-// HTTPClient interface
+// HTTPClient interface that enables mocking
+// https://www.thegreatcodeadventure.com/mocking-http-requests-in-golang/
 type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
@@ -26,7 +27,7 @@ type accountRestClient struct {
 	getUrlFormatString    string
 	deleteUrlFormatString string
 	// httpClient            *http.Client
-	httpClient HTTPClient
+	Client HTTPClient
 }
 
 // returns the interface, could be used this way by the end user
@@ -40,6 +41,12 @@ func NewAccountClient(endpoint string, httpClient *http.Client) AccountClient {
 
 //returns the struct. useful at test time to get hold of the deleteInternal method
 func NewAccountRestClient(endpoint string, httpClient *http.Client) *accountRestClient {
+	getUrlFormatString := endpoint + "/%s"
+	deleteUrlFormatString := endpoint + "/%s?version=%d"
+	return &accountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
+}
+
+func NewTestingAccountRestClient(endpoint string, httpClient HTTPClient) *accountRestClient {
 	getUrlFormatString := endpoint + "/%s"
 	deleteUrlFormatString := endpoint + "/%s?version=%d"
 	return &accountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}

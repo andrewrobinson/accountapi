@@ -87,7 +87,7 @@ func (c *accountRestClient) doGet(url string) (*http.Response, error) {
 
 	setCommonHeaders(req)
 
-	resp, err := c.httpClient.Do(req)
+	resp, err := c.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +103,7 @@ func (c *accountRestClient) doDelete(url string) (*http.Response, error) {
 
 	setCommonHeaders(req)
 
-	resp, err := c.httpClient.Do(req)
+	resp, err := c.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -119,7 +119,7 @@ func (c *accountRestClient) doPost(url string, json []byte) (*http.Response, err
 
 	setCommonHeaders(req)
 
-	resp, err := c.httpClient.Do(req)
+	resp, err := c.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}

@@ -1,18 +1,16 @@
 package mocks
 
-import "net/http"
+import (
+	"errors"
+	"net/http"
+)
 
 // MockClient is the mock client
-type MockClient struct {
+type MockClientThatErrorsOnDo struct {
 	DoFunc func(req *http.Request) (*http.Response, error)
 }
 
-var (
-	// GetDoFunc fetches the mock client's `Do` func
-	GetDoFunc func(req *http.Request) (*http.Response, error)
-)
-
 // Do is the mock client's `Do` func
-func (m *MockClient) Do(req *http.Request) (*http.Response, error) {
-	return GetDoFunc(req)
+func (m *MockClientThatErrorsOnDo) Do(req *http.Request) (*http.Response, error) {
+	return nil, errors.New("MOCK ERROR ON DO")
 }
