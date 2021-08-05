@@ -7,7 +7,6 @@
 # https://ieftimov.com/post/testing-in-go-go-test/
 go test ./... -cover -v -endpoint=http://accountapi:8080/v1/organisation/accounts
 
-#  go run cmd/main.go --endpoint=http://accountapi:8080/v1/organisation/accounts
-
-# ginkgo not found in container
-# ginkgo -v
+# run this locally to view coverage
+# go test ./... -cover -v -coverprofile=prof.out
+# go tool cover -html=prof.out
