@@ -54,6 +54,4 @@ services:
         - .:/go-with-compose
       working_dir: /go-with-compose
       command: scripts/run-tests.sh
-      # command: ls -la /go-with-compose/
-      # command: go run main.go
-      # command: go test  ./...
+
