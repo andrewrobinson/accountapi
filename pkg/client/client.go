@@ -15,6 +15,7 @@ type AccountClient interface {
 	Fetch(id uuid.UUID) (model.FetchedAccountData, error)
 	Create(data model.AccountDataForCreate) (model.AccountDataForCreate, error)
 	Delete(id uuid.UUID, version int64) error
+	DeleteForTestCleardown(id uuid.UUID, version int64) error
 }
 
 type AccountRestClient struct {
@@ -112,9 +113,7 @@ func (c *AccountRestClient) Create(data model.AccountDataForCreate) (model.Accou
 	}
 }
 
-func (c *AccountRestClient) Delete(id uuid.UUID, version int64) error {
-
-	// _, statusCode, err := c.deleteInternal(id, version)
+func (c *AccountRestClient) DeleteForTestCleardown(id uuid.UUID, version int64) error {
 
 	_, _, err := c.deleteInternal(id, version)
 
@@ -123,17 +122,26 @@ func (c *AccountRestClient) Delete(id uuid.UUID, version int64) error {
 	}
 
 	return nil
+}
 
-	//TODO - checking for 204 sort of makes sense, but sucks if you are using it for cleardown at test time
+func (c *AccountRestClient) Delete(id uuid.UUID, version int64) error {
 
-	// success := *statusCode == http.StatusNoContent
+	_, statusCode, err := c.deleteInternal(id, version)
 
-	// fmt.Printf("deleteInternal response code: %d\n", *statusCode)
+	if err != nil {
+		return err
+	}
 
-	// if success {
-	// 	return nil
-	// } else {
-	// 	return fmt.Errorf("Delete statusCode not 204:%d", *statusCode)
-	// }
+	//Checking for 204 sort of makes sense but is debatable
+	//Because of this I had to create another delete for use at integration test time
+	success := *statusCode == http.StatusNoContent
+
+	fmt.Printf("deleteInternal response code: %d\n", *statusCode)
+
+	if success {
+		return nil
+	} else {
+		return fmt.Errorf("Delete statusCode not 204:%d", *statusCode)
+	}
 
 }

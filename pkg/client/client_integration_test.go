@@ -17,12 +17,6 @@ func TestClient(t *testing.T) {
 	RunSpecs(t, "Client Integration Suite")
 }
 
-type Books struct {
-	Title  string
-	Author string
-	Pages  int
-}
-
 var _ = Describe("Client Integration", func() {
 
 	endpointFlag := flag.String("endpoint", "http://localhost:8080/v1/organisation/accounts", "")
@@ -36,7 +30,7 @@ var _ = Describe("Client Integration", func() {
 
 	BeforeEach(func() {
 		//cleardown
-		err := accountClient.Delete(id, 0)
+		err := accountClient.DeleteForTestCleardown(id, 0)
 		Expect(err).To(BeNil())
 
 		//fetch and expect to find nothing.
