@@ -93,7 +93,7 @@ func (c *AccountRestClient) Create(data model.AccountDataForCreate) (model.Accou
 
 	success := *statusCode == http.StatusCreated
 
-	fmt.Printf("createInternal response: %d, %s\n", *statusCode, string(body))
+	// fmt.Printf("createInternal response: %d, %s\n", *statusCode, string(body))
 
 	if success {
 

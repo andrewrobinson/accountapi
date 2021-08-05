@@ -12,15 +12,19 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+var endpointFlag *string
+
 func TestClient(t *testing.T) {
+	// endpointFlag = flag.String("endpoint", "http://localhost:8080/v1/organisation/accounts", "")
+
+	endpointFlag = flag.String("endpoint", "http://accountapi:8080/v1/organisation/accounts", "")
+
+	flag.Parse()
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Client Integration Suite")
 }
 
 var _ = Describe("Client Integration", func() {
-
-	endpointFlag := flag.String("endpoint", "http://localhost:8080/v1/organisation/accounts", "")
-	flag.Parse()
 
 	fmt.Printf("Client Integration tests running against endpoint:%s\n", *endpointFlag)
 
