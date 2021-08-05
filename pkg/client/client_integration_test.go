@@ -12,14 +12,9 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-var endpointFlag *string
+var endpointFlag = flag.String("endpoint", "http://localhost:8080/v1/organisation/accounts", "")
 
 func TestClient(t *testing.T) {
-	// endpointFlag = flag.String("endpoint", "http://localhost:8080/v1/organisation/accounts", "")
-
-	endpointFlag = flag.String("endpoint", "http://accountapi:8080/v1/organisation/accounts", "")
-
-	flag.Parse()
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Client Integration Suite")
 }
@@ -77,46 +72,6 @@ var _ = Describe("Client Integration", func() {
 
 })
 
-func fetch(accountClient AccountClient, id uuid.UUID) {
-
-	fetchedAccountData, err := accountClient.Fetch(id)
-
-	if err != nil {
-		fmt.Printf("fetch failure, err: %+v\n", err)
-	} else {
-		fmt.Printf("fetch success returned attributes: %+v, links:%s with id:%s\n\n",
-			fetchedAccountData.Data.Attributes, *fetchedAccountData.Links.Self, fetchedAccountData.Data.ID)
-	}
-
-}
-
-func create(accountRestClient AccountClient, id uuid.UUID) {
-
-	data := buildAccountDataForCreate(id)
-
-	accountData, err := accountRestClient.Create(data)
-
-	if err != nil {
-		fmt.Printf("create failure, err: %+v\n", err)
-	} else {
-		fmt.Printf("create success returned attributes: %+v with id:%s\n\n",
-			accountData.Data.Attributes, accountData.Data.ID)
-	}
-
-}
-
-func delete(accountRestClient AccountClient, id uuid.UUID) {
-
-	err := accountRestClient.Delete(id, 0)
-
-	if err != nil {
-		fmt.Printf("delete failure, err: %+v\n", err)
-	} else {
-		fmt.Println("delete success")
-	}
-
-}
-
 func buildAccountDataForCreate(id uuid.UUID) model.AccountDataForCreate {
 
 	country := "GB"
@@ -126,11 +81,6 @@ func buildAccountDataForCreate(id uuid.UUID) model.AccountDataForCreate {
 		Country: &country, BaseCurrency: "GBP", BankID: "400302", BankIDCode: "GBDSC",
 		AccountNumber: "10000004", Iban: "GB28NWBK40030212764204", Bic: "NWBKGB42", AccountClassification: &accountClassification,
 	}
-
-	// att := model.AccountAttributes{Name: []string{"Samantha Holder"},
-	// 	Country: &country, BaseCurrency: "GBP", BankID: "400302", BankIDCode: "GBDSC",
-	// 	AccountNumber: "10000004", CustomerID: "234", Iban: "GB28NWBK40030212764204", Bic: "NWBKGB42", AccountClassification: &accountClassification,
-	// }
 
 	m := model.Account{ID: id,
 		OrganisationID: "eb0bd6f5-c3f5-44b2-b677-acd23cdde73c",
