@@ -24,10 +24,23 @@ type AccountRestClient struct {
 	httpClient            *http.Client
 }
 
-// const (
-// 	ACCEPT_HEADER = "application/vnd.api+json"
-// 	GAME_ID2 = 67890
-// )
+// returns the interface, could be used this way by the end user
+// https://www.sohamkamani.com/golang/2018-06-20-golang-factory-patterns/
+func NewAccountClient(endpoint string) AccountClient {
+	httpClient := initHTTPClient()
+	getUrlFormatString := endpoint + "/%s"
+	deleteUrlFormatString := endpoint + "/%s?version=%d"
+	return &AccountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
+
+}
+
+//returns the struct. useful at test time to get hold of an internal method I don't want in the interface
+func NewAccountRestClient(endpoint string) *AccountRestClient {
+	httpClient := initHTTPClient()
+	getUrlFormatString := endpoint + "/%s"
+	deleteUrlFormatString := endpoint + "/%s?version=%d"
+	return &AccountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
+}
 
 func initHTTPClient() *http.Client {
 	return &http.Client{
@@ -38,44 +51,6 @@ func initHTTPClient() *http.Client {
 		},
 	}
 }
-
-//TODO - a fake fn for a test test
-func ReturnFive(in int) int {
-	return 5
-}
-
-// https://www.sohamkamani.com/golang/2018-06-20-golang-factory-patterns/
-
-func NewAccountClient(endpoint string) AccountClient {
-	httpClient := initHTTPClient()
-
-	getUrlFormatString := endpoint + "/%s"
-	deleteUrlFormatString := endpoint + "/%s?version=%d"
-
-	return &AccountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
-
-}
-
-// func NewAccountClient(endpoint string) AccountClient {
-// 	httpClient := initHTTPClient()
-
-// 	getUrlFormatString := endpoint + "/%s"
-// 	deleteUrlFormatString := endpoint + "/%s?version=%d"
-
-// 	nar := &AccountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
-// 	var accountClient AccountClient = nar
-// 	return accountClient
-// }
-
-// func NewAccountRestClient(endpoint string) *AccountRestClient {
-// 	httpClient := initHTTPClient()
-
-// 	//TODO - any better way of storing and not exposing these?
-// 	getUrlFormatString := endpoint + "/%s"
-// 	deleteUrlFormatString := endpoint + "/%s?version=%d"
-
-// 	return &AccountRestClient{endpoint, getUrlFormatString, deleteUrlFormatString, httpClient}
-// }
 
 func (c *AccountRestClient) Fetch(id uuid.UUID) (model.FetchedAccountData, error) {
 	var ret model.FetchedAccountData
@@ -119,7 +94,7 @@ func (c *AccountRestClient) Create(data model.AccountDataForCreate) (model.Accou
 
 	success := *statusCode == http.StatusCreated
 
-	// fmt.Printf("createInternal response: %d, %s\n", *statusCode, string(body))
+	fmt.Printf("createInternal response: %d, %s\n", *statusCode, string(body))
 
 	if success {
 
@@ -139,20 +114,26 @@ func (c *AccountRestClient) Create(data model.AccountDataForCreate) (model.Accou
 
 func (c *AccountRestClient) Delete(id uuid.UUID, version int64) error {
 
-	_, statusCode, err := c.deleteInternal(id, version)
+	// _, statusCode, err := c.deleteInternal(id, version)
+
+	_, _, err := c.deleteInternal(id, version)
 
 	if err != nil {
 		return err
 	}
 
-	success := *statusCode == http.StatusNoContent
+	return nil
 
-	// fmt.Printf("deleteInternal response: %d, %s\n", *statusCode, string(body))
+	//TODO - checking for 204 sort of makes sense, but sucks if you are using it for cleardown at test time
 
-	if success {
-		return nil
-	} else {
-		return fmt.Errorf("statusCode not 204:%d", *statusCode)
-	}
+	// success := *statusCode == http.StatusNoContent
+
+	// fmt.Printf("deleteInternal response code: %d\n", *statusCode)
+
+	// if success {
+	// 	return nil
+	// } else {
+	// 	return fmt.Errorf("Delete statusCode not 204:%d", *statusCode)
+	// }
 
 }

@@ -27,7 +27,6 @@ type AccountAttributes struct {
 	AccountClassification   *string  `json:"account_classification,omitempty"`
 	AccountMatchingOptOut   *bool    `json:"account_matching_opt_out,omitempty"`
 	AccountNumber           string   `json:"account_number,omitempty"`
-	CustomerID              string   `json:"customer_id,omitempty"`
 	AlternativeNames        []string `json:"alternative_names,omitempty"`
 	BankID                  string   `json:"bank_id,omitempty"`
 	BankIDCode              string   `json:"bank_id_code,omitempty"`

@@ -77,8 +77,13 @@ func buildAccountDataForCreate(id uuid.UUID) model.AccountDataForCreate {
 
 	att := model.AccountAttributes{Name: []string{"Samantha Holder"},
 		Country: &country, BaseCurrency: "GBP", BankID: "400302", BankIDCode: "GBDSC",
-		AccountNumber: "10000004", CustomerID: "234", Iban: "GB28NWBK40030212764204", Bic: "NWBKGB42", AccountClassification: &accountClassification,
+		AccountNumber: "10000004", Iban: "GB28NWBK40030212764204", Bic: "NWBKGB42", AccountClassification: &accountClassification,
 	}
+
+	// att := model.AccountAttributes{Name: []string{"Samantha Holder"},
+	// 	Country: &country, BaseCurrency: "GBP", BankID: "400302", BankIDCode: "GBDSC",
+	// 	AccountNumber: "10000004", CustomerID: "234", Iban: "GB28NWBK40030212764204", Bic: "NWBKGB42", AccountClassification: &accountClassification,
+	// }
 
 	m := model.Account{ID: id,
 		OrganisationID: "eb0bd6f5-c3f5-44b2-b677-acd23cdde73c",
