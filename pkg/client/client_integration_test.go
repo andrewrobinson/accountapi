@@ -49,42 +49,71 @@ var _ = Describe("Client Integration", func() {
 
 	})
 
-	Context("CRUD for a single insert", func() {
-		It("Behaves as expected", func() {
+	Context("CRUD for a single insert - failure case", func() {
+		It("a missing name gives http 400", func() {
 
-			//insert and assert about what is returned
-			dataToInsert := buildAccountDataForCreate(id)
-			accountData, err := accountClient.Create(dataToInsert)
-			Expect(err).To(BeNil())
-			Expect(accountData.Data.ID).To(Equal(id))
-			Expect(*accountData.Data.Version).To(Equal(int64(0)))
-			Expect(accountData.Data.Attributes).To(Equal(dataToInsert.Data.Attributes))
+			//TODO - does the spec say that error_message will be present?
 
-			//fetch and expect back what was inserted, along with an extra Link section
-			fetchedAccountData, err := accountClient.Fetch(id)
-			Expect(err).To(BeNil())
-			Expect(fetchedAccountData.Data.ID).To(Equal(id))
-			Expect(*fetchedAccountData.Data.Version).To(Equal(int64(0)))
-			Expect(fetchedAccountData.Data.Attributes).To(Equal(dataToInsert.Data.Attributes))
-			expectedLink := fmt.Sprintf("/v1/organisation/accounts/%s", id)
-			Expect(*fetchedAccountData.Links.Self).To(Equal(expectedLink))
-
-			//Delete and get no error (due to a 204)
-			err = accountClient.Delete(id, 0)
-			Expect(err).To(BeNil())
-
-			//fetch and it is not found
-			_, err = accountClient.Fetch(id)
-			Expect(err.Error()).To(Equal("NOT FOUND"))
-
-			//Delete and get an error (due to a 404)
-			err = accountClient.Delete(id, 0)
-			Expect(err.Error()).To(Equal("Delete statusCode:404 instead of 204"))
+			dataToInsert := buildAccountDataForFailedCreate(id)
+			_, err := accountClient.Create(dataToInsert)
+			Expect(err.Error()).To(Equal("statusCode not 201:400, ErrorMessage:validation failure list:\nvalidation failure list:\nvalidation failure list:\nname in body is required"))
 
 		})
 	})
 
+	// Context("CRUD for a single insert - success case", func() {
+	// 	It("Behaves as expected", func() {
+
+	// 		//insert and assert about what is returned
+	// 		dataToInsert := buildAccountDataForCreate(id)
+	// 		accountData, err := accountClient.Create(dataToInsert)
+	// 		Expect(err).To(BeNil())
+	// 		Expect(accountData.Data.ID).To(Equal(id))
+	// 		Expect(*accountData.Data.Version).To(Equal(int64(0)))
+	// 		Expect(accountData.Data.Attributes).To(Equal(dataToInsert.Data.Attributes))
+
+	// 		//fetch and expect back what was inserted, along with an extra Link section
+	// 		fetchedAccountData, err := accountClient.Fetch(id)
+	// 		Expect(err).To(BeNil())
+	// 		Expect(fetchedAccountData.Data.ID).To(Equal(id))
+	// 		Expect(*fetchedAccountData.Data.Version).To(Equal(int64(0)))
+	// 		Expect(fetchedAccountData.Data.Attributes).To(Equal(dataToInsert.Data.Attributes))
+	// 		expectedLink := fmt.Sprintf("/v1/organisation/accounts/%s", id)
+	// 		Expect(*fetchedAccountData.Links.Self).To(Equal(expectedLink))
+
+	// 		//Delete and get no error (due to a 204)
+	// 		err = accountClient.Delete(id, 0)
+	// 		Expect(err).To(BeNil())
+
+	// 		//fetch and it is not found
+	// 		_, err = accountClient.Fetch(id)
+	// 		Expect(err.Error()).To(Equal("NOT FOUND"))
+
+	// 		//Delete and get an error (due to a 404)
+	// 		err = accountClient.Delete(id, 0)
+	// 		Expect(err.Error()).To(Equal("Delete statusCode:404 instead of 204"))
+
+	// 	})
+	// })
+
 })
+
+func buildAccountDataForFailedCreate(id uuid.UUID) model.AccountDataForCreate {
+
+	country := "GB"
+	accountClassification := "Personal"
+
+	att := model.AccountAttributes{
+		Country: &country, BaseCurrency: "GBP", BankID: "400302", BankIDCode: "GBDSC",
+		AccountNumber: "10000004", Iban: "GB28NWBK40030212764204", Bic: "NWBKGB42", AccountClassification: &accountClassification,
+	}
+
+	m := model.Account{ID: id,
+		OrganisationID: "eb0bd6f5-c3f5-44b2-b677-acd23cdde73c",
+		Type:           "accounts", Attributes: &att}
+
+	return model.AccountDataForCreate{Data: &m}
+}
 
 func buildAccountDataForCreate(id uuid.UUID) model.AccountDataForCreate {
 

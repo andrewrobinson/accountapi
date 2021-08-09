@@ -3,7 +3,8 @@ package model
 import uuid "github.com/satori/go.uuid"
 
 type AccountDataForCreate struct {
-	Data *Account `json:"data,omitempty"`
+	Data         *Account `json:"data,omitempty"`
+	ErrorMessage string   `json:"error_message,omitempty"`
 }
 
 type FetchedAccountData struct {

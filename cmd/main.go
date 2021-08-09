@@ -11,6 +11,22 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+/*
+
+Reading list:
+
+https://github.com/googlemaps/google-maps-services-go/blob/master/client.go
+*returns raw http Response, has the fnal config style
+TODO - make a "client-user" project that brings in various clients
+
+
+
+
+
+*/
+
+// https://www.sohamkamani.com/golang/2018-06-20-golang-factory-patterns/
+
 // this might be a way of giving defaults and overriding them
 // https://www.sohamkamani.com/golang/options-pattern/
 func initHTTPClient() *http.Client {

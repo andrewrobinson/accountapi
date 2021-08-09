@@ -93,7 +93,7 @@ func (c *accountRestClient) Create(data model.AccountDataForCreate) (model.Accou
 
 	success := *statusCode == http.StatusCreated
 
-	// fmt.Printf("createInternal response: %d, %s\n", *statusCode, string(body))
+	fmt.Printf("createInternal response: %d, %s\n", *statusCode, string(body))
 
 	if success {
 
@@ -107,7 +107,16 @@ func (c *accountRestClient) Create(data model.AccountDataForCreate) (model.Accou
 		}
 
 	} else {
-		return ret, fmt.Errorf("statusCode not 201:%d", *statusCode)
+
+		err := json.Unmarshal(body, &ret)
+
+		if err != nil {
+			fmt.Printf("XXX error case unmarshall problem: %+v\n", err)
+			return ret, err
+		} else {
+			return ret, fmt.Errorf("statusCode not 201:%d, ErrorMessage:%+v", *statusCode, ret.ErrorMessage)
+		}
+
 	}
 }
 
